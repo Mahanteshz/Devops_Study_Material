@@ -1,0 +1,262 @@
+Create Pod 
+-------------------------
+All the commands in kubernetes sill start from kubectl
+ 
+what is command to create containers in docker?
+
+docker run --name <containername> <image_name>
+
+kubectl run --image <image_name> <pod_name>
+
+kubectl run --image tomee mypod1  
+
+
+https://killercoda.com/killer-shell-ckad/scenario/playground
+
+
+
+How to create pods in kubernetes ? :
+------------------------------------
+
+Pods can be creted in two ways
+1. YAML files:
+     - yaml files used in k8s are also called as definition files (or) manifest files.  
+     - yaml file based creation of k8s objects are preffered as we can keep files used for objects creation.
+	 
+	 we will write definition files (or) manifest files & execute these file to create pods.
+
+2. commands: 
+     - Through command line (CLI) we can create k8s objects as well
+     - creating k8s from cli is not best practice
+     - preffred only, if we want to create a k8s object quickly.
+
+     syntax: to create pod from commands  (CLI)
+             kubectl run --image <image_name> <pod_name>
+  
+             kubectl run --image tomee tomcat-pod
+          
+    	     kubectl run --image <docker_imageName> <pod_name>
+     
+	     kubectl run --image tomee tomcatpod
+              
+	     kubectl run --image jenkins/jenkins myjenkinspod
+			 
+	     kubectl run --image alpine myalpinepod
+
+
+To see list of all pods:
+------------------------
+kubectl get pods
+
+
+To see list of nodes in a cluster:
+----------------------------------
+kubectl get nodes
+
+To delete any pod:
+------------------
+ kubectl delete pods <pod_name>
+
+To know on which worker node, pod is running:
+----------------------------------------------
+kubectl get pods -o wide
+( -o wide ==> stands for deatiled output )
+
+-----------------------------------------------------------------------------------
+
+Note:
+-----
+in kubernetes we will call yaml files as definition files or manifest files ==> both are same
+
+if i write yaml file to create pod ==> 
+
+How to write manifest files or yaml files in k8s ?
+==================================================
+
+Kubernetes performs container orchestration by using definition files. 
+Definition file, will have 4 top level elements.
+
+to create any object in k8s we need to write yaml files
+
+all yaml / manifest files in k8s will contain 4 top level elements:
+
+1. apiVersion: apps/v1
+2. kind: 
+3. metadata:
+4. spec:
+
+
+
+1. apiVersion:
+-------------------
+Depending on type of kubernetes object we want to create, there is corresponding code library we want to use.
+
+   Kind     			       apiVersion
+   ==================================================  
+   Pod       			       v1
+   Replication COntroller	       v1
+   Service   			       v1
+   NameSpace     		       v1
+   Secrets         		       v1
+   ReplicaSet       		       apps/v1
+   Deployment      		       apps/v1
+
+[P,R,S,N,S,R,D]
+
+2. kind: Pod
+----------
+Refers to kubernetes object which we want to create.
+Ex: Pod, Replicaset, service etc
+
+
+3. metadata:
+-----------------
+
+Additional information about the kubernetes object
+like name, labels  etc
+
+  note: labels are used for filtering 
+
+
+4. spec (speicifications):
+----------
+Contains docker container related information like image name, environment variables, port mapping etc.
+
+spec block 
+
+spec:
+  containers:
+  - name: <name_of_container>
+    image: <name_of_image>
+
+
+
+Note:
+-------
+- command to get detailed information about a containers?
+  docker inspect containername/container id
+
+- command to get detailed information about a pod?
+  kubectl describe pods <pod_name>
+  
+  1. it will give detail about 
+     - name of pod,
+     - on which node pod is running
+     - labels assigned for pod
+     - IP of pod
+  
+  2. in containers block give detail about
+     - Containers name & container ID
+     - Image used to create container.
+     - Details about port / volume mapping & environmentvariables etc
+--------------------------------------------
+
+
+Creating PODS from manifest files:
+===================================
+
+Note:
+----
+- in k8s we will call YAML files as manifest files or definition files.
+- 1st element of manifest file apiVersion is written in camel case letters ==> apiVersion: v1
+- 2nd element kind will have first letter in uppercase
+   eg: kind: Pod , kind: Replicasets
+
+------------------------------------------------------------------------------------
+
+Ex1:  Create a pod definition file to start apache tomcat in a pod. 
+Name the pod as tomcat-pod, name the container as tomcat-container. 
+
+vi pod-definition1.yml
+
+# what do we need to create?
+# pod ==> podname ==> tomcat-pod, container-name ==> tomcat-container , image ==> tomee , label app: tomcat_label & author: bharath
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-pod
+  labels:
+    app: tomcat_label
+    author: bharath
+spec:
+  containers:
+  - name: tomcat-container
+    image: tomee
+...
+
+:wq!
+
+
+kubectl create -f pod-definition1.yml
+-----------------------------------------------------
+
+============================================
+Command to run the definition file:
+-----------------------------------
+kubectl create -f <filename>.yml
+(or)
+kubectl apply -f <filename>.yml
+
+
+To delete the pod created from the any file:
+---------------------------------------------
+kubectl delete -f  <filename>.yml
+
+
+
+==================================================
+kubectl get nodes ==> show all nodes of cluster & thier status
+
+kubectl get pods ==> shows all the pods
+
+kubectl run --image <imagename> <podname> ==>  to create pod from command directly 
+
+kubectl delete pod <podname>  ==>  to delete pod 
+
+------------------------------------
+Note:
+-----
+how to login into container in docker?
+
+  docker ==> docker attach <container-name> 
+
+  docker exec -it <containername> /bin/bash
+  note: /bin/bash command will open linux terminal inside the container
+     
+
+
+How to login into pod ?
+-----------------------
+  kubectl exec -it <podname> -- <linux_command>
+  kubectl exec -it mytomcatpod1 -- /bin/bash
+  note: /bin/bash command will open linux terminal inside the pod/container
+
+  to come out of pod use ==> exit (this will not stop container)
+
+
+
+How to run any command in pod from k8s master ?
+------------------------------------------------
+
+kubectl exec -it <pod_name> -- <linux_command>
+
+eg: to get container os information
+
+kubectl exec -it <pod_name> -- cat /etc/os-release 
+
+
+Recap of Important pointers about containers:
+---------------------------------------------
+1. containers will run only till default process is running 
+     that is whatever mentoined CMD / ENTRYPOINT instruction in any dockerfile
+	 
+2. Containes are ephemeral(shortlived) by default.
+     that is once containers is deleted, all data inside containers will get deleted permanantely
+	 
+3. Containers will work on PROCESS ISOLATION principle.
+     that is process running inside a container will be completely isolated from any other process in docker host
+
+
+--------------------------------------------------------------

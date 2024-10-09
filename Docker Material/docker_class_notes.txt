@@ -1,0 +1,1704 @@
+Agenda :
+-----------
+• Servers?
+• Types of servers?
+• Virtual machines ?
+• Difference between virtulization & containerization
+• Install docker
+• Importatnt terminlogies in docker
+------------------------------------------------------------------------------------------
+
+Servers:
+-----------
+servers are nothing but a computer with high configurations, which will run on Hardware components such as HDD, RAM & CPU's connected via networking components
+
+
+Types of servers:
+-----------------
+1. Physical servers:
+--------------------
+- servers which is setup in your company, which we can see infront of us & which our company can manage. 
+- physical servers are on-site server that a company must manage and maintain individually inside the company location.
+
+   eg: Dataceneters in company
+   
+   Physical servers are also called as on-premise servers or data center servers.
+
+
+    disadvantages of Physical servers:
+    -----------------------------------
+    • cost of setting up Physical servers is very high
+    • maintainance:
+       24X7 Power Supply ==> keep servers under controlled environments.
+	   
+    • optimal usage:
+      most of hardware resource may go untilized
+      ex: if we have server with 32 GB RAM, 8cpus & 1000 GB HDD & if our application use a maximum of 20GB RAM, 4cpu's & 250 GB HDD remaining resources goes un-utilized     
+
+
+
+2. What are Virtual machines or Virtual  servers?
+   - hardware components / servers which you may not see infront of you, but still we can access those virtually
+     eg: servers provided by cloud providers like AWS (ec2 instances) , Azure , gcp
+
+
+Hypervisers:
+------------
+Using hypervisors software we can create Virtual machines.
+
+using hypervisors softwares Any bigger servers can be split into several smallers servers called as virtual machines & this process is known as server virtualization. 
+
+Where will Virtual machines get compute (hardware) respurces from?
+-----------------------------------------------------------------
+From host servers on which hypervisors software installed on
+
+eg of Hyperviser softwares: Microsoft Hyper-v , Orcale virtual box , VmWare EsX etc...
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+What are Virtual machines or Virtual  servers?
+----------------------------------------------
+- hardware components / servers which you cannot see infront of you, but still we can access those virtually
+   eg- ec2 instances, all cloud provided servers
+
+What are drawbacks of Virtual machines?
+--------------------------------------
+- It is old method
+- In Virtualization we need fixed allocation of harware resources, which will reduce overall system performance.
+- If we use multiple guest OS (or) Virtual machines then the system performance is low.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note:
+=====
+1. interchangebale names or other names for a server
+    ------------------------------------------------------------------------
+    Servers ==computers== machines == virtual machines <vm> == nodes == slave ==instances ====> all are same
+
+2.  interchangebale names or other names of artifacts
+     --------------------------------------------------
+     artifacts== packages== binaries ==executables=====> all are same
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Docker
+========
+
+Docker is a containerization tool.
+-----------------------------------
+containers are like virtual machines
+Docker is a tool. It is used to create the containers
+
+what is Virtualization?
+-----------------------
+ process of creating VM's from host server is called as Virtualization
+ • in Virtualization we need to do Fixed allocation of harware resources.
+ • in Virtualization Guest OS will have more size (size will be in GB's)
+
+
+what is Containerization?
+--------------------------
+ process of creating containers from host server is called as Containerization
+ • in Containerization there is no concept of Fixed Hardware resources allocation. 
+ • in Containerization Guest OS will be very small in size (size will be in MB's).
+ 
+ 
+Why containers OS (Guest OS) will be very small in size ?
+---------------------------------------------------------
+because containers works on Process isolation technology (Need for full os version is removed) containers will use somepart of Host OS
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+How to install docker ?
+
+--  Create Ubuntu virtual Machine on AWS   
+     security group ==> inbound rules ==> All Traffic & anywhere
+     Connect using git bash
+     Go to Root Account
+
+hostnamectl set-hostname docker
+
+     $ sudo  su -
+     
+     1.download shell script to install docker.
+        curl -fsSL https://get.docker.com -o get-docker.sh
+		
+     2.execute shell script to install docker.
+	   sh get-docker.sh  ( This will execute the shell script, which will install docker )
+     
+	 
+How to check the docker is installed or not?
+# docker --version
+
+
+We should be comformatable with three terms
+---------------------------------------------------------------
+
+1) Docker Images:
+  - Docker images are like template files, which will be used to create containers.
+  - Docker images contains binaries / libraries which are necessary for one software application.
+
+2) Docker Containers:  
+  - Running instance of docker image is called as container.
+  - Container is nothing but it is a virtual machine, which have very small sized OS
+  - With the help of images container will run
+
+
+
+3) Docker Host:
+  - Machine on which docker is installed, is called as Docker host.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+How to create a containers?
+==>creating container has two steps 
+   - step1: download docker image of our choice
+   - step2: run the downloaded docker image, it will create container from the downloaded image
+
+
+
+
+ex: create a container named as c1 from amazonlinux image
+     step1: download amazonlinux image:
+            syntax: docker pull <image_name>
+            command: docker pull amazonlinux
+     step2: run the downloaded amazonlinux image to create container with name as c1
+            syntax: docker run --name  <container_name> <image_name>
+            command: docker run --name c1 amazonlinux
+
+
+ASSIGNMENT
+-----------------------
+***********Important_Interview_Question****************************
+- what is the Difference between virtual machines & a conatiners ?
+Agenda:
+-----------
+- Important commands in Docker
+- options in Docker run command
+- Downloading the image and creating container
+- Stopping the container and removing/deleting the container
+- Understanding detached mode and interactive mode
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Steps to create any container:
+------------------------------
+1. download docker image from dockerhub
+   dockerhub -- https://hub.docker.com/ -- place from where we will download any docker image
+
+2. run the downloaded image
+
+ 
+ 
+ 
+
+Docker Commands
+==================
+Working on Images:
+---------------------------
+1)  To download a docker image 
+    docker pull <image_name> 
+
+
+2)  To see the list of docker images 
+      docker image ls 
+             (or) 
+      docker images 
+
+3)  To delete a docker image from docker host 
+       docker rmi  <image_name>
+              (or) 
+		docker rmi  <image_id>	  
+			  
+4) To upload a docker image into docker hub 
+      docker push image_name 
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+-----
+kinds of images which will be available in docker hub are
+-----------------------------------------------------------
+- OperatingSystem related docker images - (ubuntu, amazonlinux, centos...etc)
+- CI-CD tools related docker images - (jenkins, maven, tomcat...etc)
+
+
+Working on containers:
+----------------------------------
+
+5) To create a container from a docker image  ( imp )
+     docker run <image_name>
+
+
+6) To see the list of all running continers 
+     docker  container  ls 
+	     (or)
+	 docker ps
+
+
+7) To stop a running container 
+     docker stop   <container_name/container_id> 
+
+8) To start a stopped container 
+     docker  start  <container_name/container_id>
+
+9) To see the list of  all  containers  ( i.e.  both running and stopped containers)  
+     docker   ps -a 
+
+10) To delete a stopped container 
+      docker  rm  <container_name/container_id>
+
+11) To delete a running container forcefully ( i.e. delete directly without stopping) 
+      docker  rm  -f  <container_name/containerid>
+  
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+options we can use along in docker run command
+----------------------------------------------
+
+syntax: docker run <options_listed_below>
+
+--name ==> Used for giving a name to a container 
+
+-d ==> used for running the container in detached mode as a background process 
+
+-p ==> Used for port mapping between port of container with the dockerhost port.
+
+     -p <portNumber_in_dockerHost>:<portNumber_in_container>
+      eg- 7070:8080
+
+-it ==> for opening an interactive terminal inside the container 
+
+-e ==> Used for passing environment varaibles to the container 
+	  
+-v ==> Used for attaching a volume to the container 
+
+
+--network ==> Used to run the contianer on a specific network 
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Example 1: start a tomcat container using image name ==> tomee with container name as c1
+
+         syntax: docker run --name <container_name> <image_name>
+		 command: docker run --name c1 tomee
+		 
+		 #observation: this container gets started, it will print logs in our terminal, that is container is running in foreground... to run container in background we need to use -d option in docker run command
+		 
+		 
+Example 2: start a tomcat container using image name ==> tomee with container name as c2 with detached (-d) mode 
+		 
+         syntax: docker run --name <container_name>  -d <image_name>
+		 command: docker run --name c2 -d tomee
+		 
+		 #observation: this container gets started, it will start container in background, as we used -d option in docker run command
+
+
+
+Port mapping: 
+=============
+Port mapping enables  access to application running inside containers from outside world (i.e internet or browser)
+Port mapping also called as port forwarding 
+Port mapping is needed for Application which needs to be accessed from GUI / browser
+eg:- Tomcat, Jenkins etc...
+
+
+syntax: -p <portNumber_in_dockerHost>:<portNumber_in_container>
+
+How to use Port mapping / port forwarding ?
+
+  eg: start a docker container using tomcat image(tomee) with container_name as my_tomcat_container & port forwarding use 7070 port of docker host. 
+  
+         docker run --name my_tomcat_container  -p <portNumber_in_dockerHost>:<portNumber_in_container>  tomee
+         
+         docker run --name my_tomcat_container -p 7070:8080  tomee
+
+         http://<publicip>:<portNumber_in_dockerHost>
+         http:// 3.110.213.91:7070
+
+
+
+
+Scenarios on using docker commands:
+------------------------------------
+
+Scenario 1:
+----------
+Start tomcat as a container and name it as "webserver_container". Perform port mapping and run this container in detached mode
+
+
+# docker run --name  webserver_container  -p 7070:8080  -d tomee
+
+To access homepage of the tomcat container
+Launch any browser ==> http://public_ip_of_dockerhost:7070
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Scenario 2:
+-------------------------
+Start jenkins as a container in detached mode , name is as "devserver_container", perform port mapping 
+
+
+docker run --name devserver_container  -p dockerhostPort containerportnumber -d jenkins/jenkins
+
+docker run --name devserver_container -p 4040:8080 -d  jenkins/jenkins
+
+
+To access home page of jenkins ( In browser) ==> http://public_ip_of_dockerhost:4040
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Scenario 3: Start a container centos_container along with downloanding image simeltaneously
+
+To start centos as container, if centos image ifnot downloaded earlier, then docker will pull that from dockerHub immediately & it will start container
+
+
+# docker run --name centos_container  -it  centos
+
+
+#  exit  ( To come back to dockerhost )
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Assignment :
+-------------------
+- create a container, container name ==> appserver_container, imagename ==> nginx (default port of nginx is 80) , run in detached mode with port mapping to 5555 on docker host  & access nginx from browser
+ 
+- create a container, container name ==> grafana_container, imagename ==> grafana/grafana (default port of grafana is 3000) run in detached mode with port mapping to 6666 on docker host  & access grafana from browser
+
+- create a container, container name ==> atlassian/jira-software (default port of jira is 8080 ) run in detached mode with port mapping to 7777 on docker host & access jira from browser
+
+
+
+- create a amazonlinux container with interactive mode & create a environment variable & print variable value inside the container
+
+
+Answer: docker run -it --name amazonlinux_container -e MY_VARIABLE="Hello, Manthu" amazonlinux /bin/bash	Agenda:
+=======
+- Tags in docker images
+- commands for checking information / details of containers
+  logs, inspect
+- commands for Accessing running containers
+  attach, exec
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+example: To start a container with terminal attached inside the container
+
+syntax: docker run --name <container_name> -it <imagename>
+        docker run --name c1 -it amazonlinux
+
+# above command apart from creating container c1, it will also open terminal (-it) inside the c1
+  
+to come out of this container c1 back to dockerhost we have 2 options
+      1. exit --> container will gets moved into exited state
+      2. ctrl p + q --> container will be in running state  
+
+to go again inside container from docker host is :
+==>  docker exec -it <container_id_or_name> /bin/bash
+
+
+
+Important feature of docker containers:
+---------------------------------------
+
+1. docker works on process isolation
+
+2. when a docker container is deleted ==>all files / data inside the container will also get deleted by default 
+
+(to be continued.....)
+
+
+Note:
+-----
+To come-out from running container without exiting
+press Ctrl +p  Ctrl +q  ==> it will run your container in background without stopping exit from container
+
+
+---------------------------------------------------------------------------------------------
+
+
+
+What are docker tags?
+- Tags contains information about version of a docker image
+   syntax <imagename>:<tagname>
+  
+  eg:
+     1. if you run below command docker will take tag as default tag(i.e latest) even if you dont mention the tag
+    	docker pull amazonlinux
+     
+     2. if we want to download specific version of image we can mention tag along with image name
+	to download docker image with tag 2, we can run below command
+	     docker pull amazonlinux:2
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+commands for checking information / details of containers:
+----------------------------------------------------------
+
+ - To see the logs generated by a container 
+    docker logs <container_name/container_id> 
+
+
+ - To get detailed info about a container 
+    docker inspect <container_name/container_id>
+              (or)
+    docker inspect <image_name/image_id>
+
+ 	
+	
+ Note:  
+      docker inspect provides information about the specified container, such as its ID, name, configuration, network settings, volume mounts, and much more.This information can be helpful for troubleshooting, understanding how a container is set up.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+
+
+
+
+			  
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+How can we get docker images?
+----------------------------
+from docker hub
+
+1. DockerHub --> we can download / pull images of our choice from dockerhub
+by creating our own custom images
+2. we can create image from any of our running container.
+3. we can write a file called as Dockerfile & we can create our own dockerimage 
+
+
+
+
+Docker volumes:
+---------------
+by-default, when a docker container is deleted / exited, all files that was there inside the containers will also get deleted permananetly. 
+
+
+Volumes are a mechanism for storing data outside containers.
+Docker volumes provide persistent storage for our containers.
+All volumes are managed by Docker and stored in a dedicated directory on your host, usually /var/lib/docker/volumes/<volume_name>/_data
+
+
+by using docker volumes we can store the important files present in container, so that even if container gets deleted/removed permanently, we would still be still having these files stored in our docker host.
+
+also by using docker volumes we can use share these stored files with other containers as well.
+
+#Docker volume commands:
+1. to create volume
+syntax: docker volume create <volume_name>
+
+2. to list volumes
+syntax: docker volume ls
+
+(to be continued.....)
+
+ 
+
+
+
+Agenda:
+=======
+- Ways of creating docker Images
+- Creating image from a running conatiner
+- Creating image from Dockerfile
+- Os level virtualization
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+commands for Accesing running containers:
+------------------------------------------
+<important-commands>
+
+1) To go into the shell of a running contianer which is moved into background:
+   -------------------------------------------------------------------------- 
+     docker attach <container_name/container_id> 
+
+2) To execute anycommand in a container (but from docker host)
+   --------------------------------------------------------------
+    docker exec -it container_name/container_id <command>
+      
+     Eg: 
+      1. To create a 3 file inside container 
+	 docker exec -it <container_name/container_id> touch file1 file2 file3
+              
+      2. To list files inside the container 
+         docker exec -it <container_name/container_id> ls -lrt
+
+
+Docker volumes practicals:
+---------------------------
+we have to use volumes because if container stops/exits/deleted then all files present in container gets deleted. 
+
+to persist (store) few important files present in container to dockerhost so that even if container deleted, we should have these important files present in docker host.
+
+also with volumes we can share files in one container with other containers also.
+
+    
+Important ponters on volumes:
+------------------------------
+1. Docker volume is simply a directory inside our container.
+2. we can declare a directory as a volume ONLY WHILE CREATING THE CONTAINER.
+3. we can’t create volume from already running container.
+4. we can share one volume across any number of containers. 
+5. We can map volume in two ways
+   - Host ←→ Container
+   - Container ←→ Container
+
+Benefits of Volume:
+------------------
+- Decoupling storage from containers. 
+- Share volume among different containers.
+- On deleting the container, the volume does not delete.
+
+Practicals on volumes:
+----------------------
+
+1. create a volume
+syntax: docker volume create <volume_name>
+        docker volume create myvol1
+		
+#observation: docker volume ls & see myvol1 gets created
+		
+2. lets assume important directory in our container is /opt/myimportantdirectory, now to preserve files present in this directory into docker host  
+
+  create a container with volume mounting along with docker run command
+  syntax: -v <volumeName>:<important_dir_path_in_container>
+
+  syntax: docker run --name c1 -v <volume_name>:<important_dir_path_in_container> -it ubuntu
+
+   ubuntu@ip-172-31-45-143:~$ docker run --name c1 -v myvol1:/opt/myimportantdirectory -it ubuntu
+#observation: we will be logged into container, now lets go inside the  /opt/myimportantdirectory/ & create files like   myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log & myimpfile5.log
+   root@b5dc730ffc84:/# cd /opt/myimportantdirectory/
+   root@b5dc730ffc84:/opt/myimportantdirectory#
+   root@b5dc730ffc84:/opt/myimportantdirectory# touch myimpfile{1..5}.log
+   root@b5dc730ffc84:/opt/myimportantdirectory#
+   root@b5dc730ffc84:/opt/myimportantdirectory# ls
+   myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log  myimpfile5.log
+
+press ctrl p+q ==> come out of container & back to dockerhost
+
+
+3. verify the files present in docker host as in containers directory
+
+all mounted volumes file will be avaialble in /var/lib/docker/volumes/<volumeName>/_data
+
+    ubuntu@ip-172-31-45-143:~$
+    ubuntu@ip-172-31-45-143:~$  cd /var/lib/docker/volumes/myvol1/_data
+    ubuntu@ip-172-31-45-143:/var/lib/docker/volumes/myvol1/_data$ ls
+    myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log  myimpfile5.log
+    ubuntu@ip-172-31-45-143:/var/lib/docker/volumes/myvol1/_data$
+
+#observations: now try deleting c1 container we will still have all files present in /var/lib/docker/volumes/myvol1/_data directory
+
+
+4. With volume mounts we can share the same files with another container also:
+  lets create a conatiner with amazonlinux image, named c2 with using volume mounts mounted to /opt/mydir1 
+  
+  ubuntu@ip-172-31-45-143:~$ docker run --name c2 -v myvol1:/opt/mynewdirectory -it amazonlinux
+  bash-5.2#
+  bash-5.2# cd /opt/mynewdirectory 
+  bash-5.2# ls
+  myimpfile1.log 	myimpfile2.log 	myimpfile3.log 	myimpfile4.log 	myimpfile5.log
+  bash-5.2#
+
+  #observations: after container gets created go to mounted directory i.e (/opt/mydir1) & list file, you can see all files from volume will be avaialble 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Q: How do you list all Docker volumes on your system?
+   Use the command docker volume ls.
+
+Q: How do you inspect a Docker volume?
+   Use the command docker volume inspect <volume_name>.
+
+Q: How do you remove a Docker volume?
+   Use the command docker volume rm <volume_name>.
+
+Q: Can you share Docker volumes between multiple containers?
+   Yes, volumes can be shared between multiple containers by specifying the same volume name when creating new container.
+docker 
+
+
+
+
+Docker Images:
+--------------
+we can get docker images in 2 ways 
+- Pre-defined images ==> images which we download from dockerHub
+- Custom docker images ==> custom images created by devops engineers / developers of any company
+
+
+
+
+What are the ways through which we can create docker images?
+-----------------------------------------------------------------------------------
+
+There are three ways through which we can create docker images.
+
+ 1. We can download any docker image directly from docker hub (using docker pull command) 
+    docker images in dockerhub  are prepared & maintained by docker company and docker community.
+ 
+ 2. We can create our own docker images form our own docker containers. 
+       i.e. first we create container form base docker image taken form docker hub and then by going inside container, we can install all required softwares and then create docker image from our own docker container.
+  
+ 3. We can create docker image from a Dockerfile.  It is the most preferred way of creating docker images.
+ 
+
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ 
+ 
+ 
+Creating a custom image from any running container?
+---------------------------------------------------
+- create a container
+ 
+- do your customizations
+   customizations ==> install any softwares (or) add files / directories
+
+- docker diff <ContainerID or ContainerNAME>
+  docker diff commmand shows custom changes we have made in the container incomparison with original image.
+  
+- docker commit  <container_name>     <new_image_name>:<tag>
+   docker commit command will create image from the containername specified
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+
+
+Dockerfile:
+===========
+- A text file which uses predefined keywords or instructions to build a docker image.
+
+- Automation of docker image creation
+   • FROM
+   • RUN
+   • CMD
+
+
+
+
+Steps involved in creation from docker image to running container:
+------------------------------------------------------------------
+Step 1: create a file named Dockerfile
+Step 2: Add instructions in Dockerfile
+Step 3: Build Dockerfile to create image
+Step 4: Run image to create container
+
+
+
+
+Using docker file
+--------------------
+This is a simple text file, which uses  predefinied keywords for creating customized docker images.
+
+Key words or insrtuctions used in docker file  ( case sensitive )
+
+  1) FROM  --  specify the base image for building a new image.
+  
+  2) MAINTAINER -- This represents name of the organization or the author who created this docker file.
+  
+  3) RUN  -- Used for running linux commands while creating image.
+             It is generally helpful for installing the software in the image.
+
+  4) CMD   -- This is used to specify the initial command that should be executed when the container starts.
+
+
+****Important_interview_Question*****
+What is difference between RUN & CMD in dockerfile?
+----------------------------------------------------
+- RUN ==> RUN instructions will get executed while image is getting created
+- CMD ==> CMD instructions will get executed as initial command (first command) when a container gets created
+
+
+
+
+Scenario 1:
+-----------
+Create a docker iamge named myimage & tag as v1, take ubuntu as the base image and specify the maintainer as bharath. Construct an image from the dockerfile.
+
+
+
+vi Dockerfile
+
+FROM ubuntu
+MAINTAINER bharath
+
+inorder to create a image from dockerfile, we have to use docker build command  like below
+
+docker build -t <image_name>:<tag_name> .
+
+docker build -t myimage:v1 .
+
+Note:
+-----
+ . (dot) ==> dot in docker build command indicates the Dockerfile present in current directory
+ its always a best practice to keep Dockerfile in seperate directory
+ # in dockerfiles indicates comment, these lines will be skipped from execution
+ 
+ 
+Scenario 2:
+-----------
+Create a docker image named helloimage with tag as v3, take amazonlinux as the base image, create a file /etc/hellofile which has content "hello everyone".
+
+vi Dockerfile
+
+FROM amazonlinux 
+MAINTAINER bharath
+RUN echo "hello everyone" > /etc/hellofile
+
+
+docker build -t <image_name>:<tag_name> .
+
+
+#create a container from created image & go inside the container & cat /etc/hellofile to verify the content
+
+
+Scenario 3:
+-----------
+Create a docker iamge named amazonlinuxgit with tag as 2023, take amazonlinux as the base image, i want git to be available in my container, Construct an image from the dockerfile.
+
+
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y
+RUN yum install git -y
+
+
+inorder to create a image from dockerfile, we have to use docker build command 
+
+docker build -t amazonlinuxgit:2023 .
+
+#observation ==> create conatiner, login & verify the git installation 
+
+
+
+Scenario 4:
+-----------
+create an image named importantImage with tag as v1
+take ubuntu as the base image, Whenever i start my container, i want date command / program to get executed
+
+vi Dockerfile
+
+   FROM ubuntu
+   MAINTAINER shreeshail
+   #run instructions will always get executed at the time of image creation
+   #cmd instructions will always get executed as first command, whenever we create a container from this image
+   CMD date
+
+docker build -t importantImage:v1 .
+
+ubuntu@ip-172-31-45-143:~$ docker run --name c5 -it importantImage:v1
+Mon Oct 30 03:52:09 UTC 2023
+ubuntu@ip-172-31-45-143:~$
+
+
+Observation:
+  eventhough we have specified docker run command with -it container doesent open interactive terminal, container just executed date command as mentioned in CMD instruction of Dockerfile & container gets moved into exited state.
+  what is the reason behind this?
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+Key words used in docker file.......< continued....>
+
+
+5) ENTRYPOINT -- used to specify the default process that should be executed when container starts.
+It can also be used for accepting arguments from the CMD instruction.
+
+
+6) USER  -- used to specify the default user who should login into the container.
+
+7) WORKDIR --  Used to specify default working directory in the container
+
+8) COPY  --  Copying the files from the host machine to the container.
+
+9) ADD  -- Used for copying files  from host to container, it can also be used for downloading files from remote servers.
+
+10) ENV  --  used for specifying the environment variables that should be passed to the container.
+
+11) EXPOSE -- Used to specify the internal port of the container
+
+12) VOLUME  -- used to specify the default volume that should be attached to the container.
+
+13) LABEL  --  used for giving label to the container
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignament:
+------------
+- create different images with different Base image flavor.
+- investigate, why container stopped automatically after using CMD Instruction in senario4 ?
+ANS: the instructions mentioned in the command(CMD) executed hence its stoped, to make it run indeinately or to be alive start a foreground service in webserver  
+~~~
+- difference between && (and operator) and || (or operator) used in linux.AGENDA:
+-------
+- Dockerfile instructions
+- CMD vs ENTRYPOINT
+- Registry in dockerhub
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+ex1: create an image named ubuntujava with tag as v1 
+     -  take ubuntu as the base image,
+     -  update apt package & install java (or default-jre) 
+     -  Whenever i start my container, i want below echo command to get executed  (i have created image / container with java installed)
+
+
+  FROM ubuntu 
+  RUN apt update -y
+  RUN apt install default-jre -y
+  CMD echo "i have created image / container with java installed 
+
+#observation: build the image & run container, once container gets started observe the CMD instruction gets executed (echo command)
+
+Note:
+-----
+as best practice in CMD & ENTRYPOINT instructions use them inside square brackets with comma seperation, 
+i.e exec form ==> ["<commands>"] 
+ex: ["echo","hello world"]
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Instructions in Dockerfile (continued....)
+-------------------------------------------
+
+8) COPY --> Copying the files from the dockerhost machine to the container.
+   syntax: COPY <files/Directory_name_in_dockerhost> <path_inside_container>
+   
+9) ADD  --> Used for copying files  from host to container, it can also be used for downloading files from remote servers.
+   synatx: ADD <files/Directory_name_in_dockerhost> <path_inside_container>
+	
+   ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz /opt
+
+
+
+What is difference between COPY & ADD instruction in Dockerfile?
+-----------------------------------------------------------------
+Both COPY & ADD instructions are used to copy files/Directories from DockerHost to Container.
+ADD can also be used to download file (like wget command in linux) & also ADD can untar/unzip file inside containers,
+
+
+
+
+10) ENV  -->  used for specifying the environment variables that should be passed to the container.
+
+  ENV <Variable_name> <variable_value>
+  
+  ENV sportsman viratkohli
+ 
+  inside container ==>  echo $sportsman
+  
+11) EXPOSE -- Used to specify the port on which we want to run our container
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+What is difference between CMD &  ENTRYPOINT instruction in Dockerfile:
+------------------------------------------------------------------------
+
+CMD ==> we will define the commands that needs to be executed when a container starts.
+ENTRYPOINT ==> we will define the executable that needs to be used when a container starts.
+
+
+********important_interview_question****************
+
+Difference between CMD & ENTRYPOINT ?
+-------------------------------------
+
+CMD sets the default commands that needs to be executed when a container starts.
+CMD command/instruction can be easily overridden while creating a container with different command.
+whereas ENTRYPOINT command/instruction can't be overridden while creating a container.
+
+Most of Docker containers by default have ENTRYPOINT ==> which is ==> /bin/sh -c
+
+ENTRYPOINT generally used if we want to container as an executable ( like only purpose of running container is to run a script only)
+
+
+
+Can we have both CMD & ENTRYPOINT in docker file? 
+-------------------------------------------------
+Yes we can have both in a Dockerfile. but CMD instructions will be passed as an arguments for ENTRYPOINT.
+
+
+ex: usecase1 of using both CMD & ENTRYPOINT?
+    FROM ubuntu
+    CMD ls
+    ENTRYPOINT ["echo", "Helloworld"]
+
+    build above Dockerfile, run container ==> container Will be executed as below ===> Helloworld ls 
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Scenario 1:
+-----------
+Create a dockerfile by taking 
+    - ubuntu as the base image 
+    - create a user as bharath & make him as default user after logging in container
+    - default working directory as opt  
+Construct an image from the dockerfile.
+
+vi Dockerfile
+
+
+FROM ubuntu
+RUN useradd bharath
+USER bharath
+WORKDIR opt
+
+docker build -t <image_name> .
+
+create conatiner & verify
+
+Scenario 2:
+------------
+Create a dockerfile by taking 
+    - alpine as the base image 
+    - copy samplefile to docker container to /opt directory
+    Construct an image from the dockerfile.
+--> create a file called samplefile in dockerHost 
+
+
+
+vi Dockerfile
+   FROM alpine
+   COPY ./samplefile /opt
+
+docker build -t <image_name> .
+
+create container & verify
+
+
+
+Scenario  3:
+------------
+Create a dockerfile by taking 
+- busybox as the base image 
+- download maven installation file to docker conatiner /opt directory
+Construct an image from the dockerfile.
+
+FROM busybox
+ADD https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz /opt
+
+
+Note:
+-----
+Alpine & busybox are ligh weight (smaller sized) docker images which will have all linux utilities
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+****IMPORTANT****
+
+How long will a docker container run?
+--------------------------------------
+Every docker image come with default process. 
+As long as default process is running, the container will be running condition. The moment, the default process execution is completed, the container will get itself moved to exited / stopped state.
+
+(default process ==> whatever mentioned in CMD instruction in Dockerfile) 
+in already running containers, we can check default process using docker ps -qa command & observe under COMMAND sections  
+
+
+
+Practicals & observations on understanding default process in containers:
+-------------------------------------------------------------------------
+
+scenario 1:
+-----------
+Create Dockerfile with below mentioned instructions
+
+FROM ubuntu
+CMD ["date"]
+
+build this Dockerfile & create a conatiner from it & observe that conatiner has moved in to exited state.
+
+Reason? ==> container has exited, because it has completed running its default process (whatever mentioned in CMD instruction i.e date command )
+
+
+For all linux based containers( ubuntu,centos,amazonlinux.....) , the default process is shell process for that Dockerfile will look like
+
+FROM ubuntu
+CMD ["/bin/bash"]
+
+/bin/bash or bash -- is nothing but the terminal.
+Hence we are able to enter -it mode  in ubuntu/centos or any OS based containers.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+what is image Registry (or) container registry? 
+===============================================
+image registry is a centralized location for storing and distributing docker images. 
+The image registry allows you to push and pull the docker images as needed.
+
+Registries can be private or public.
+When the registry is public, the images are shared with the whole world, 
+whereas in the private registry the images are shared only amongst the members of an company or a team.
+
+Types of registry
+1) public registry, ex: dockerhub
+2) private registry ex: jfrog, nexus, ECR, ACR
+
+
+Create an account in hub.docker.com
+
+TO upload the image to hub.docker.com  ( docker login command is used )
+------------------------------------------------------------------------
+# docker login   ( provide docker_id and password )
+
+Usecase on pushing image to dockerhub:
+--------------------------------------
+Note: if we want to push image to dockerhub then image name should always start with docker_id / dockerhub username
+
+Create a docker image named amazonlinuxgit with tag as 2023, take amazonlinux as the base image, git to be available inside the container, Construct an image from the dockerfile & push it to docker hub.
+
+
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y
+RUN yum install git -y
+
+docker build -t <dockerHub_userID>/<imagename>:<tag> .
+
+docker push <dockerHub_userID>/<imagename>:<tag>
+
+login to docker hub GUI to see your image
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignment:
+-----------
+1. check, how copy files from dockerhost to already running container(docker cp /home/user/documents/example.txt d5a8b8a2c46f:/app)
+
+2. Steps involved to deploy acecloudacademy web application in a container 
+   - launch ec2 instances change security group settings (inbound rules set to all traffic & anywhere)
+   - install git, java, maven
+   - clone acecloudacademy github repo  ( https://github.com/acecloudacademy/maven-repo.git )
+   - build using maven to generate war file
+
+   after generating war file from above steps
+   Write a Docker file with tomee as a base image
+   COPY generated war file to webapps directory inside the container & expose on port==> EXPOSE 8080
+   build Dockerfile to create image & run container so that we can access ===> acecloudacademy webapplication.
+
+NOTE on How docker / containeraization changed ways of application deployment ?:
+-----------------------------------------------------------------------------------
+
+Before Docker / containeraization found:
+-----------------------------------------
+CI process :
+• Developers pushes code to SCM TOOLS (i.e GitHub)
+• Jenkins (CI tool) sees that new code is available. It builds the code using maven and generates artifacts(like jar/war)
+• Jenkins saves the artifacts(like jar/war) in to artifactory ( Nexus / Jfrog ).
+
+CD process :
+• Setup dependencies(Software's like java, tomcat etc....) and other configuration files needed to deploy Application.
+• Download the war files from artifactory ( Nexus / Jfrog ) & copy to tomcat webapps directory.
+• ReStart the tomcat application
+
+
+Cons / disavantages of above processes:
+---------------------------------------------------------
+• Packaging and deploying applications in multiple environments is very challenging job. 
+• Applications may work in one environment which may not work in another environment. The reasons for this are 
+varied; different operating system, different dependencies, different libraries, software versions.
+
+
+
+After Docker / containeraization found:
+--------------------------------------------------------
+CI process :
+• Developer pushes code to SCM TOOLS (i.e GitHub)
+• Jenkins (CI tool) sees that new code is available. It builds the code using maven and generates a application package(like jar/war)&  also we will create docker image ( which has application code + artifacts (jar/war)  + dependencies (Software's like java,maven,tomcat) + configuration files if any )
+• CI Will push docker image to the Private Regestries / artifactory (Nexus/JFrog etc).
+
+CD process :
+• Download the Docker image(package).
+• Start the docker image which will create a container where our application will be running.
+
+Advantages:
+run docker container which has application stored inside that, with this
+Application works seamlessly in any environment be it dev or QA or UAT or prod.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+-----
+
+in all companies will be having different environment before going live in to production. 
+
+Environments:
+-------------
+environment is group of servers created for usage by different teams (developemnt team, diffrent test) team based on thier functionalities.
+We typically may have four environments along any software's lifecycle.
+
+
+Development / dev environment:
+------------------------------
+- This environment is used by developers.
+- Development environment is configured for developers to write code quickly, build, deploy & verify changes by running some basic tests(unit tests).
+- There would be many deployments in Development environment 
+- once the results in dev are sattisfactory, code will be promtoed to QA environment
+
+
+Testing / QA environment:
+-------------------------
+- This environment is used by QA engineers or testers.
+- here QA enginners (or testers) will test the application, if application has any issues testers will report bug to developers & ask them to fix that.
+- lesser frequent deployments than development environment.
+- if application passes all tests, test team agrees the changes, Next we will deploy the application to staging / UAT environments.
+
+
+UAT / Staging environment:
+--------------------------
+- This environment is used to give demo of application to customers.
+- The goal of a staging / UAT environment is to simulate production as much as possible.
+- Once customer approves all changes done to application, Next we will deploy the code to production environment.
+
+
+Production:
+-----------
+- Production environment is the live environment. 
+- When the end-user use a web/mobile application, the application would be operating on a production server. It’s been created in the production environment. 
+- very very less frequent deployments compared to other environments.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note:
+-----
+********important_interview_question****************
+
+How to reduce DOCKER image size:
+-------------------------------
+as devops enginner we also needs to keep our image size lesser
+
+to make our image size lesser we have few options
+1. using lightweight images as base image eg: alpine linux  
+2. using mutlistage builds
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignments:
+------------
+create a dockerimage to deploy  acecloudacademy application along with all its dependencies (java,git, maven,tomcat, war file) use ubuntu 
+(or) amazonlinux as base image
+
+
+
+
+Running acecloudacademy_project  application as a container:
+------------------------------------------------------------------------------------------
+
+Pre-requisite tools for acecloudacademy_project : install java, maven & git in your docker host
+
+[ Note: To install java & maven on ubuntu: 1. apt update -y 2. apt install openjdk-11-jdk -y & 3. apt install maven -y ]
+
+
+
+
+Step 1 : Clone sourceCode of acecloudacademy_ProjectCode repo  from github
+--------------------------------------------------------------------------------------
+git clone https://github.com/Acecloudacademy/maven-repo.git
+
+Step 2: Build source sourceCode to generate artifacts:
+-----------------------------------------------------------------------
+cd maven-repo
+
+execute maven clean package command to generate artfiact(war file) gets generated inside directory called target
+mvn clean package
+
+
+Step 3:    Write Dockerfile and copy War file to Docker Image  :
+---------------------------------------------------------------------------------------------
+write Dockerfile with tomee as base image, copy the generated war file into webapps directory & use port 8080
+
+#vim Dockerfile
+
+FROM tomee:8-jre11
+COPY ./target/maven-web-application.war /usr/local/tomee/webapps/
+EXPOSE 8080
+
+
+
+& build image  ==> docker build -t <dockerhub_username>/<image_name>:<tag-name> .
+
+push built docker image to dockerhub (so that others can access / pull your image)
+
+
+Step 4:  Create the container using image created in previous step:
+------------------------------------------------------------------------------------------
+
+docker  run --name project_container -d -p 7070:8080 -it <image_name>:<tag-name> 
+
+
+
+Step 5:   Access Apache Tomcat from browser Interface:
+------------------------------------------------------
+
+access web application from browser
+
+http://<DockerHostIP>:<PORT>/maven-web-application
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ what are layers in docker images?
+---------------------------------
+each instructions in a Dockerfile is called as layer.
+each layer itself is an form of an image.
+
+
+why we need to reduce size of docker images ?
+---------------------------------------------
+Reducing the size of Docker images improves deployment speed, efficient resources utilization and security purposes.
+smaller sized Docker images improves the overall performance of Docker containers.
+
+How to reduce the size of an docker image?
+------------------------------------------
+1. we can use small sized base images. ex: alpine based images 
+2. we need to reduce the number of layers in dockerimage, by combining commands in RUN instruction
+3. we can multi-stage builds (Dockerfile with multiple FROM instructions)
+4. we can use .dockerignore file, to ignore unwanted files getting copied into image
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Multi-stage builds:
+-------------------
+In multi-stage builds, we can use multiple FROM statements in our Dockerfile. 
+Each FROM instruction can use a different base, we can selectively copy artifacts from one stage to another, leaving behind everything we don't want in the final image.
+
+
+
+Run full acecloudacademy_project application as a container, docker image should contain all dependencies needed:
+--------------------------------------------------------------------------------------------------------------
+
+Pre-requisite tools for acecloudacademy_project : install java, maven & git in your docker host
+
+[ Note: To install java & maven on ubuntu: 1. apt update -y 2. apt install default-jre -y & 3. apt install maven -y ]
+
+
+
+vi Dockerfile
+
+FROM ubuntu as ub
+WORKDIR /opt
+RUN apt update -y &&  apt install openjdk-11-jdk  -y && apt install maven -y && apt install git -y
+RUN git clone https://github.com/Acecloudacademy/maven-repo.git && cd maven-repo && mvn clean package
+
+FROM tomee:8-jre11
+COPY --from=ub /opt/maven-repo/target/maven-web-application.war /usr/local/tomee/webapps
+EXPOSE 8080
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+can we have multiple CMD instructions in Dockerfile?
+----------------------------------------------------
+Yes, but only the last CMD instructions will be considered as main CMD instruction
+
+
+FROM ubuntu
+CMD date
+CMD whoami
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Multi-stage builds:Name your stages, by adding an AS <NAME> to the FROM instruction
+-----------------------------------------------------------------------------------
+vi Dockerfile
+
+FROM ubuntu as build
+WORKDIR /opt
+RUN apt update -y && apt install default-jre -y && apt install maven -y && apt install git -y
+RUN git clone  https://github.com/Acecloudacademy/maven-repo.git && cd maven-repo && mvn clean package
+
+
+FROM tomee
+COPY --from=build /opt/maven-repo/target/maven-web-application.war /usr/local/tomee/webapps
+EXPOSE 8080
+--------------------------------------------------------------------------------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+####Deploy Python Application####
+============================================
+
+vim app.py
+-----------------
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello, World!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+------------------------------
+
+
+vim requirements.txt
+-------------------
+Flask
+requests==2.26.0
+pytest
+Werkzeug
+--------------------
+
+
+vim Dockerfile 
+-------------------------------------------------------------
+# Stage 1: Build stage
+FROM python:3.9 AS builder
+WORKDIR /app
+RUN rm -rf venv
+RUN python -m venv venv
+COPY requirements.txt .
+RUN venv/bin/python -m pip install --upgrade pip
+RUN venv/bin/python -m pip install -r requirements.txt
+
+
+# Stage 2: Test stage
+FROM builder AS tester
+COPY . .
+RUN venv/bin/python -m unittest discover tests
+
+# Stage 3: Final stage(deploy app)
+FROM python:3.9-slim
+WORKDIR /app
+COPY --from=builder /app/venv /app/venv
+COPY app.py .
+RUN adduser --disabled-password --gecos "" vijay
+USER vijay
+CMD ["/app/venv/bin/python", "app.py"]
+--------------------------------------------------------------------
+
+##Creating image
+docker build -t your-image-name .
+
+##Creating conatiner port 5000 
+docker run --name <conatiner_name>  -d -p 5000:5000 <imagename>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Assignment: Write a Multi Stage Dockerfile for Sample NodeJs Application and deploy to Conatiner
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Docker containers works on process isolation technology.
+process (mentioned in CMD instuction) running in a container will be running as an isolated process, it will not communicate with any other process (or) with any other containers by default.
+
+but in some cases we need to setup communication between the conatiners.
+
+How does containers commuinicate?
+--------------------------------
+containers can communicate with another container ONLY WHEN THEY ARE IN SAME NETWORK.
+if both containers are in same network they can communicate using CONTAINER NAMES or IP ADDRESSES.
+
+
+
+
+Docker Networking:
+-------------------
+
+What is Docker networking?
+--------------------------
+Docker Network is used to setup communication between the docker containers that are running on same (or) different docker hosts
+
+if 1 container wants to communicate with another container we need those conatiners to be in same network.
+
+
+whenever we install docker in a server, by default 3 network gets created.
+
+1. bridge 
+2. host 
+3. none
+
+1. Bridge:
+----------
+   bridge network is default network,
+   if we create a container without specifying any network then containers will get created in bridge network  
+
+   docker run --name c1 -it  busybox
+ 
+   how to know all details about a container?
+   docker inspect <containerName>
+
+2. host:
+--------
+   In host network, containers will not get seperate ip address assigned, but our docker host IP itself becomes containers IP.
+   --network <networkname>
+   
+   docker run --name <containername> --network host <imagename>
+   
+
+3. None:
+---------
+    containers will not have any network assigned.
+	"none" network is useful when you want a container to have no network connectivity, isolating it completely from all networks.
+   
+    docker run --name c2 -it --network none busybox
+
+4. Overlay Network:
+--------------------
+   If you want to establish the connection between the different containers which are present in different docker hosts.
+   Overlay Network is used in Docker swarm 
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+Multi container architecture using docker:
+------------------------------------------
+if multiple conatiners that work for same applications. 
+all applications in software indusries have 3 tiers which are frontend , backend & database.
+which needs to commuincate with each other, these can be achieved using below ways
+1) --link
+2) docker-compose
+
+
+1)  --link option
+----------------------
+SYNTAX: --link <containerName>:<name_for_link>
+
+Use case:
+--------------
+      Start two busybox containers and create link between them
+      
+      Create 1st  container ==> c1
+        # docker run --name c1 -it  busybox
+        / # 
+        come out of the container without exit  ==> ( ctrl + p  + q)
+         
+      
+      Create 2nd busy box container  and establish link to c1 container
+	  syntax: --link <contaier-tobe-linked>:<linkname>
+	  
+        # docker run --name  c2 --link c1:mylink1  -it   busybox   
+        / #
+      
+      
+      How to check  link is established for not?
+      ==>
+      / #  ping c1
+      
+
+How to check link created for any container or not?
+==> Use docker inspect command & look for Link
+
+
+
+
+2)  docker-compose
+
+Docker compose  is a tool, using which we can create multicontainer architecture using yaml files.
+This yaml file contains information about the  containers that we want to launch and how they have to be linked with each other.
+
+.txt ==> text files
+shell scripts format ==> filename.share
+yaml file format ==> filename.yaml / .yml
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+YAML:
+----------
+yaml stands for ==> Yet Another Markup Language
+YAML file extension can be ==> .yaml (or) .yml
+
+
+Yaml is a file format. It is not a scripting language.
+Yaml will store the data in key value pairs
+Lefthand side - Key
+Righthand side - Value
+Yaml file is space indented.
+
+
+note:
+-----
+example of key value pairs
+name: bharath
+<key> <value>
+
+place= bangalore
+<key>= <value>
+
+
+==> To go inside sql container
+
+docker exec -it <container-id> /bin/bash
+
+==> to go inside sql
+
+mysql -u <username> -p<password>
+
+==> to check databases
+
+show databases;
+
+#o/p: sbms
+
+==> to go inside databases
+
+use sbms
+
+==> show tables;
+
+
+
+version: '3' # docker-compose version
+
+services:
+  application:
+    image: my-2-tier-project
+    ports:
+      - "8080:8080"
+    networks:
+      - springboot-db-net
+    depends_on:
+      - mysqldb
+    volumes:
+      - /data/my-2-tier-project-app
+
+  mysqldb:
+    image: mysql:5.7
+    networks:
+      - springboot-db-net
+    environment:
+      - MYSQL_DATABASE=sbms # spring boot microservices
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - /data/mysql
+
+networks:
+  springboot-db-net:
+git clone https://github.com/Mahanteshz/2-tier-app-spring-boot-with-mysql.git
+
+cd 2-tier-app-spring-boot-with-mysql
+
+mvn clean package
+
+docker build -t my-2-tier-project .
+
+docker-compose up -d#! /bin/bash
+
+# To install git run below command
+sudo yum install git -y
+
+# To install run below command
+sudo yum install maven -y
+
+# To install docker run below commands 
+sudo yum update -y
+
+sudo yum install docker -y
+
+sudo service docker start
+
+# Add ec2-user to docker group by executing below command
+
+sudo usermod -aG docker ec2-user
+
+# To install docker compose 
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+#Give permission to execute docker compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# To check docker compose version 
+docker-compose --version
+

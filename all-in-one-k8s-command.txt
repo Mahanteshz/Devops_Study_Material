@@ -1,0 +1,65 @@
+1. To create pod from a command
+==> kubectl run --image <image-name> <pod-name>
+
+2. To list out running pods, Replica sets, Deployments
+==> kubectl get pods (or) kubectl get pod (or) kubectl get po
+==> kubectl get replicasets (or) kubectl get rs
+==> kubectl get deployments (or) kubectl get deploy
+
+3. To list out nodes
+==> kubectl get nodes or kubectl get node or kubectl get no
+
+4. To delete any pod:
+==> kubectl delete pods <pod_name>
+==> kubectl delete rs <replicasets-name>
+
+5. To know IP address and on which worker node pod is running:
+==> kubectl get pods -o wide
+
+6. To get detailed information about a pod:
+==> kubectl describe pod <pod-name>
+
+7. Command to run the definition file:
+==> kubectl create -f <file.yaml>
+==> kubectl apply -f <file.yaml>
+
+8. To delete the running pod created from the any file:
+==> kubectl delete -f  <filename>.yml
+
+9. To login in to pod or run any linux command inside the pod:
+==> kubectl exec -it <pod-name> -- /bin/bash
+==> kubectl exec -it <pod-name> -- touch f1 f2 f3
+to come out of pod use ==> exit (this will not stop container)
+
+10. if we want to list only Pods which have label as ==> app:nginx
+==> kubectl get pods -l app=nginx
+
+11. To scale up and scale down the deployments:
+==> kubectl scale deployment <deployment-name> --replicas <num of replicas>
+
+12. command to update deployment from one version to another version:
+==> kubectl set image deployment <deployment_name> <container_name>=<image_to_be_updated> 
+==> kubectl set image deployment nginx-deployment  my-nginx-container=nginx:1.8
+
+13. To track the history of modified image versions:
+==> kubectl set image deployment <deployment_name> <container_name>=<image_to_be_updated> --record=true
+
+14. To check the deployment history:
+==> kubectl rollout history deployment  <deployment_name>
+
+15. To rollback deployment to previous version:
+==> kubectl rollout undo deployment <deployment_name> 
+
+16. To rollback to specific version:
+==> kubectl rollout undo deployment <deployment_name> --to-revision=<revision_number>
+
+17. To Check the status of the rollout:
+==> kubectl rollout status deployment <deployment_name>
+
+18. To create configMaps:
+==> kubectl create configmap <configmap_name> --from-literal <key>=<value>
+==> kubectl create configmap my-config-1 --from-literal=USERNAME=vijay
+
+19. To create secrets:
+==> kubectl create secret generic <secret_name> --from-literal <key>=<value>
+==> kubectl create secret generic my-secret-1 --from-literal=PASSWORD=mypasswd@123

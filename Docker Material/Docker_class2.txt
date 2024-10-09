@@ -1,0 +1,213 @@
+Agenda:
+-----------
+- Important commands in Docker
+- options in Docker run command
+- Downloading the image and creating container
+- Stopping the container and removing/deleting the container
+- Understanding detached mode and interactive mode
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Steps to create any container:
+------------------------------
+1. download docker image from dockerhub
+   dockerhub -- https://hub.docker.com/ -- place from where we will download any docker image
+
+2. run the downloaded image
+
+ 
+ 
+ 
+
+Docker Commands
+==================
+Working on Images:
+---------------------------
+1)  To download a docker image 
+    docker pull <image_name> 
+
+
+2)  To see the list of docker images 
+      docker image ls 
+             (or) 
+      docker images 
+
+3)  To delete a docker image from docker host 
+       docker rmi  <image_name>
+              (or) 
+		docker rmi  <image_id>	  
+			  
+4) To upload a docker image into docker hub 
+      docker push image_name 
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+-----
+kinds of images which will be available in docker hub are
+-----------------------------------------------------------
+- OperatingSystem related docker images - (ubuntu, amazonlinux, centos...etc)
+- CI-CD tools related docker images - (jenkins, maven, tomcat...etc)
+
+
+Working on containers:
+----------------------------------
+
+5) To create a container from a docker image  ( imp )
+     docker run <image_name>
+
+
+6) To see the list of all running continers 
+     docker  container  ls 
+	     (or)
+	 docker ps
+
+
+7) To stop a running container 
+     docker stop   <container_name/container_id> 
+
+8) To start a stopped container 
+     docker  start  <container_name/container_id>
+
+9) To see the list of  all  containers  ( i.e.  both running and stopped containers)  
+     docker   ps -a 
+
+10) To delete a stopped container 
+      docker  rm  <container_name/container_id>
+
+11) To delete a running container forcefully ( i.e. delete directly without stopping) 
+      docker  rm  -f  <container_name/containerid>
+  
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+options we can use along in docker run command
+----------------------------------------------
+
+syntax: docker run <options_listed_below>
+
+--name ==> Used for giving a name to a container 
+
+-d ==> used for running the container in detached mode as a background process 
+
+-p ==> Used for port mapping between port of container with the dockerhost port.
+
+     -p <portNumber_in_dockerHost>:<portNumber_in_container>
+      eg- 7070:8080
+
+-it ==> for opening an interactive terminal inside the container 
+
+-e ==> Used for passing environment varaibles to the container 
+	  
+-v ==> Used for attaching a volume to the container 
+
+
+--network ==> Used to run the contianer on a specific network 
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Example 1: start a tomcat container using image name ==> tomee with container name as c1
+
+         syntax: docker run --name <container_name> <image_name>
+		 command: docker run --name c1 tomee
+		 
+		 #observation: this container gets started, it will print logs in our terminal, that is container is running in foreground... to run container in background we need to use -d option in docker run command
+		 
+		 
+Example 2: start a tomcat container using image name ==> tomee with container name as c2 with detached (-d) mode 
+		 
+         syntax: docker run --name <container_name>  -d <image_name>
+		 command: docker run --name c2 -d tomee
+		 
+		 #observation: this container gets started, it will start container in background, as we used -d option in docker run command
+
+
+
+Port mapping: 
+=============
+Port mapping enables  access to application running inside containers from outside world (i.e internet or browser)
+Port mapping also called as port forwarding 
+Port mapping is needed for Application which needs to be accessed from GUI / browser
+eg:- Tomcat, Jenkins etc...
+
+
+syntax: -p <portNumber_in_dockerHost>:<portNumber_in_container>
+
+How to use Port mapping / port forwarding ?
+
+  eg: start a docker container using tomcat image(tomee) with container_name as my_tomcat_container & port forwarding use 7070 port of docker host. 
+  
+         docker run --name my_tomcat_container  -p <portNumber_in_dockerHost>:<portNumber_in_container>  tomee
+         
+         docker run --name my_tomcat_container -p 7070:8080  tomee
+
+         http://<publicip>:<portNumber_in_dockerHost>
+         http:// 3.110.213.91:7070
+
+
+
+
+Scenarios on using docker commands:
+------------------------------------
+
+Scenario 1:
+----------
+Start tomcat as a container and name it as "webserver_container". Perform port mapping and run this container in detached mode
+
+
+# docker run --name  webserver_container  -p 7070:8080  -d tomee
+
+To access homepage of the tomcat container
+Launch any browser ==> http://public_ip_of_dockerhost:7070
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Scenario 2:
+-------------------------
+Start jenkins as a container in detached mode , name is as "devserver_container", perform port mapping 
+
+
+docker run --name devserver_container  -p dockerhostPort containerportnumber -d jenkins/jenkins
+
+docker run --name devserver_container -p 4040:8080 -d  jenkins/jenkins
+
+
+To access home page of jenkins ( In browser) ==> http://public_ip_of_dockerhost:4040
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Scenario 3: Start a container centos_container along with downloanding image simeltaneously
+
+To start centos as container, if centos image ifnot downloaded earlier, then docker will pull that from dockerHub immediately & it will start container
+
+
+# docker run --name centos_container  -it  centos
+
+
+#  exit  ( To come back to dockerhost )
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Assignment :
+-------------------
+- create a container, container name ==> appserver_container, imagename ==> nginx (default port of nginx is 80) , run in detached mode with port mapping to 5555 on docker host  & access nginx from browser
+ 
+- create a container, container name ==> grafana_container, imagename ==> grafana/grafana (default port of grafana is 3000) run in detached mode with port mapping to 6666 on docker host  & access grafana from browser
+
+- create a container, container name ==> atlassian/jira-software (default port of jira is 8080 ) run in detached mode with port mapping to 7777 on docker host & access jira from browser
+
+
+
+- create a amazonlinux container with interactive mode & create a environment variable & print variable value inside the container
+
+
+Answer: docker run -it --name amazonlinux_container -e MY_VARIABLE="Hello, Manthu" amazonlinux /bin/bash

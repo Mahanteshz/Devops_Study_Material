@@ -1,0 +1,9 @@
+git clone https://github.com/Mahanteshz/2-tier-app-spring-boot-with-mysql.git
+
+cd 2-tier-app-spring-boot-with-mysql
+
+mvn clean package
+
+docker build -t my-2-tier-project .
+
+docker-compose up -d

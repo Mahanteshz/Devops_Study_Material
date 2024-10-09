@@ -1,0 +1,22 @@
+==> To go inside sql container
+
+docker exec -it <container-id> /bin/bash
+
+==> to go inside sql
+
+mysql -u <username> -p<password>
+
+==> to check databases
+
+show databases;
+
+#o/p: sbms
+
+==> to go inside databases
+
+use sbms
+
+==> show tables;
+
+
+

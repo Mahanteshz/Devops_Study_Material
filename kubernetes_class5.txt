@@ -1,0 +1,295 @@
+	###To create environment variables in pod manifest files:
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+syntax in spec block is:
+
+spec:
+  containers:
+  - name: <container-name>
+    image: <image-name>
+    env:
+    - name: <variable_name>
+      value: <variable_value>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+# create a pod with below configurations.
+  - pod name ==> tomcatpod3 , image tomee & container tomeecontainer3 
+  - labels ==> type: webapptool & author: 
+  - environment variables==> sports football
+
+vi pod-definition2.yml
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcatpod3
+  labels: 
+    type: webapptool
+spec:
+  containers:
+  - name: tomeecontainer3
+    image: tomee
+
+...
+
+kubectl apply -f pod-definition2.yml
+
+
+
+to see env variables details in k8s master node use ==> 
+kubectl describe pod <pod_name> (observe env variables defined here)
+
+to see env variables details inside the pod/container use ==>
+login into pod
+kubectl exec -it <pod_name> -- /bin/bash
+
+echo $cricketer (from output - observe variable substitutions)
+echo $password (from output - observe variable substitutions)
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Port Mapping:
+
+Syntax / Template to write pod manifest file
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: <NameofPod>
+  labels:
+    <label-name>: <label-value>   
+#spec section - <Technical section, which specifies how our container needs to get created>	
+spec: 
+  containers:
+  - name: <NameOfTheContainer>
+    image: <imageName>
+    ports:
+    - containerPort: <portOfContainer>
+      hostPort: <hostport>
+      
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apachetomcatpod
+spec:
+  containers:
+  - name: tomcat-container-v2
+    image: tomee  # Replace with your desired Tomcat image
+    ports:
+    - containerPort: 8080
+      hostPort: 30010
+=============================================================================
+
+Commands recap:
+---------------
+kubectl create -f <object_file_name>.yaml --> To create a object with a definition file
+kubectl get pods --> To display all the pods on the cluster
+kubectl get pods -o wide --> To display more information of pods
+
+generic kubernetes commands that can be used across all kubernetes objcts(pods, replicasets, deploy,services..etc):
+
+kubectl get <object_name>  --> To display list of the <object_name>  in the cluster
+kubectl get <object_name>  -o wide --> To display more information of <object_name> 
+kubectl describe <object_kind> <object_name> --> To see the information about a particular object
+kubectl delete <object_kind> <object_name> --> To delete a k8s object
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+pod is smallest object which we can create in k8s, simillar to pods kubernetes also have other objects like replicasets, replication-controller , deployments , services etc...
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+***** important interview questions *****
+
+q1: what are labels in k8s?
+     - labels are user provided key-value pairs, using labels we can organize(group) Kubernetes objects
+     - using labels we can filter different Kubernetes objects
+     - Same label (key/value) can be assigned to multiple Kubernetes objects
+
+      ex: create a pod name as my-pod-2, container name as c2  use image nginx, with labels as environment: production & app: nginx
+	  observation on filtering pods using labels:
+      if we have multiple pods in our cluster & if we want to list only Pods which have label as ==> app:nginx 
+	  Kubectl get pods -l app=nginx
+
+q2: what are selectors?
+    - Selectors helps to find and use the k8s objects based on their labels.
+
+q3: why do we need to use labels & selectors?
+    - By using labels and selectors, it will be easier to manage complex applications in Kubernetes.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Controller- manager:
+--------------------
+controller manager is the brain behind the orchestration, it always monitor actual state of objects with that of desired states.
+
+Controller manager ==> ( actual state == desired state)
+
+controller manager objects includes following
+1. Replication-controller --> older feature (not used now a days)
+2. Replicasets --> newer feature
+3. Deployments.
+4. Deamonsets.
+
+
+ReplicaSet:
+-----------
+ - ReplicaSet is a k8s object that ensures a specified number of replica Pods are running at all times.
+ - If a Pod managed by a ReplicaSet fails or is deleted, the ReplicaSet will automatically create a new replica to replace it
+ - using ReplicaSets we can achieve high availablity, load balancing and scaling.
+
+
+Why do we need to use ReplicaSet ?
+-----------------------------------
+ Suppose if we deploy only one pod of the application and by any chance if it fails after the deployment, then the application is no longer accessible to the user. 
+ ReplicaSet is nothing but the copies/replicas of the pod. So to keep the desired instances of pods running, we required to go with the ReplicaSet.
+
+
+
+Note on replicaset manifest file:
+----------------------------------
+- ReplicaSet uses elements like "replicas","selector" & "template" field in its 'spec' section.
+- Template contains all pod related information so it can be also called as pod template
+- copy pod defintion file contents ==> paste it under "template" ==> without apiversion & kind
+ 
+
+SYNTAX of ReplicaSet manifest file:
+------------------------------------
+apiVersion: apps/v1
+kind: ReplicaSets
+metadata:
+  name: <replicaSetsName>
+  labels:
+    <key>: <value>
+spec:
+  replicas: <noOfReplicas>
+  selector:
+    matchLabels:
+      <key>: <value>
+  template: # POD Template
+    metadata:
+      name: <PODName>
+      labels:
+	    <key>: <value>
+    spec:
+    - containers:
+      - name: <nameOfTheContainer>
+	    image: <imageName>
+
+...
+
+
+
+ex1: create a replicaset object with 3 replicas of tomcat pod 
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-tomee-replicaset
+  labels:
+    author: bharath
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      author: bharath
+  template:
+    metadata:
+      name: tomcat-pod-v2
+      labels:
+        author: bharath
+    spec:
+      containers:
+      - name: tomcat-container-v2
+        image: tomee
+        
+...
+
+Observations:
+--------------
+root@k8s-master:~# kubectl get rs
+NAME                 DESIRED   CURRENT   READY      AGE
+my-tomee-replicaset     3         3         3       46m
+root@k8s-master:~#
+
+DESIRED --> number of pod replicas is configured to maintain. Here, it's set to 3
+CURRENT --> actual numbers of pods currently running, This should match the desired number if the system is functioning normally
+READY --> The number of pod replicas that are ready to serve traffic. It should also match the current number if all pods are healthy; here, it is 3.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+create replicaset with name as my-second-rs, image nginx:1.24.0-alpine
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-second-rs
+  labels:
+    creator: mohan
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      creator: mohan
+  template:
+  #paste the podmanifest file without apiversion & kind
+    metadata:
+      name: mypodx
+      labels:
+        creator: mohan
+    spec:
+      containers:
+      - name: c1
+        image: nginx:1.24.0-alpine
+...
+
+
+kubectl create -f <object_file_name>.yaml --> To create a rs object with a definition file
+kubectl get pods  ( observe all pods created started by replicasets)
+
+
+to list replicasets:
+kubectl get replicasets (or) kubectl get rs
+
+to delete replicasets:
+kubectl delete rs <replicasets-name>
+
+
+Note: 
+delete few pods created using replicasets & observe that new pods getting created automtically by controller manager component via replicasets 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Assignment:
+1. create a pod manifest file with below configurations.
+  - pod name ==> jenkinspod , image jenkins/jenkins & container jenkinscontainer 
+  - labels ==> use: cicdtool
+  - environment variables==> stage1 build, stage2 test, stage3 deploy
+
+
+
+2.  create a pod manifest file 
+   - pod name ==>  apachetomcatpod. 
+   - name the container as tomcat-container-v2. 
+   - also map container port 8080 to host machine on 4040
+
+3.Create pod with 2 containers, login into second container & check os information
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+

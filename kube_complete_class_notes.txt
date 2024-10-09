@@ -1,0 +1,1698 @@
+Docker containers have several drawbacks, and container orchestration helps overcome these drawbacks in the following simple terms:
+
+Drawbacks of Docker Containers:
+-------------------------------
+
+1. Complexity:
+     If we have multiple containers, Managing many containers can be complex and time-consuming.
+
+2. Scaling:
+     It can be challenging to scale containers up and down to match application demand.
+	 
+3. High Availability: 
+     Ensuring applications are always available can be difficult.
+
+4. Load Balancing: 
+     Distributing incoming traffic evenly among containers can be a manual task.
+
+5. Resource Efficiency: 
+     Containers can sometimes use hardware resources inefficiently, leading to wastage.
+	 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Container orchestration:
+------------------------
+Container orchestration is a process of running docker containers in a distributed environment, on multiple docker host machines.
+
+container orchestration tools:
+------------------------------
+Docker swarm / kubernetes  is the tool used for performing container orchestration.
+kubernetes is most widely used  container orchestration tool in market.
+
+If we are only running a single container or two containers together then we may not need an orchestrator.
+
+
+How Container Orchestration Helps in overcoming docker container limitations?
+-----------------------------------------------------------------------------
+
+
+Container orchestration tools like Kubernetes solve these problems:
+
+1. Simplies the container handling: 
+     Orchestration tools takes care running containers in different dockerhosts, which will help in managing containers.
+	
+	 
+2. Auto-Scaling of containers: 
+     scaling means increasing / decreasing the number of containers.
+	 
+     Orchestration tools automatically scale containers based on demand, so your application can handle traffic spikes.
+	 
+3. High Availability: 
+     if a container fails (or) exits, orchestration tools automatically restarts the failed container (or) it will replace failed containers with new containers thus ensuring availablity.
+	 
+4. Networking: 
+     Orchestration tools can create & handle container networking, making it easier for containers to communicate with each other.
+	 
+5. Resource Efficiency:
+     Orchestration tools helps in controlling hardware resources used by containers.
+	 
+6. Load Balancing: 
+	 rather than running all container in 1 docker host, we can distrubute load (num of containers) to multiple docker host
+	 
+
+In simple terms, container orchestration makes it easier to deploy, manage, and scale containers, ensuring that your applications run smoothly, reliably, and efficiently in a containerized environment.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note on Keywords:
+---------------------------
+
+High availability (HA): 
+-----------------------
+  means any application is expected to be up & running all time.
+  we should build an application environment, which should be highly available. 
+ 
+  
+Downtime : 
+----------
+   if an application goes down due to any issue, we will call that as downtime.
+   we should build a system which will have zero downtime.
+   
+
+what all containerizations tools avaialble in market?
+==> Docker, container D , Podman & Rocket etc...
+    docker is most popular & widely used containerization tool 
+
+what all container ORCHESTRATION  tools avaialble in market?
+==> kubernetes, docker swarm , mesos
+    kubernetes is most popular & widely used container ORCHESTRATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+KUBERNETES:
+-----------
+- It is a container orchestration tool. 
+- Kubernetes is an open-source tool developed using GO programming language.
+- Kubernetes is als called as k8s
+- k8s was developed by Google in 2014 it was made open source & donated to CNCF.
+
+k8s designed in master-slave type architecture.
+ 
+Kubernetes creates cluster, where we will deploy our application in docker containers form.
+
+cluster is hosted by one node acting as the ‘master’ of the cluster, and other nodes(or dockerhosts) as 'worker nodes (or slave nodes)' which do the actual 'containerization' using docker. 
+
+what is cluster?
+==> cluster is a combination of  k8s master node (control plane) + worker Nodes (docker hosts)
+
+what is Master Node?
+- The master node is responsible for the management of Kubernetes cluster.
+   it has 4 main components kube-api server, kube scheduler, controller manager & etcd. [K,K,C,E]
+
+what is Worker Node?
+- Worker nodes are the nodes where the application actually running in kubernetes cluster.
+   it has 3 main components kubelet (agent) , kube-proxy & container engine (docker)
+ 
+
+Important Note on Naming conventions in kubernetes:
+----------------------------------------------------------------------------
+1. servers==> vm == machine == nodes == slaves(workers) == instances ==> same 
+2. Kubernetes is also called as k8s
+3. kubernetes master is also called as control plane
+4. kubernetes nodes are also called as slave node or worker nodes
+5. yaml files used in k8s are also called as definition files (or) manifest file.
+
+Kubernates Architecture:
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Kubernetes is a system that helps you manage a large number of applications running in containers.
+
+kubernetes is a combination of Master and worker nodes.
+
+1. Master Node (Control Plane):
+
+==> Master node is like the brain of the system, It controls and manages all the worker nodes where applications run.
+
+==> Master Node has a 4 components(KKCE), those are Kube API Server, Kube Scheduler, Controll Manager and ETCD.
+
+    1. Kube API Server: It’s like the front desk of Kubernetes and responsible to handle the request of the user, it recieves the input in yaml file format.
+    2. kube Scheduler: This decides where your applications should run based on the available resources.
+    3. Controller Manager: It keeps an eye on everything and makes sure all the applications are running smoothly and ensures actual state with that of desired state.
+    4. Etcd: This is like a database that stores all the important information and current state of the system.
+
+2. Worker Nodes:
+
+Each worker node runs the apps (containers), It consist of 3 components (KKC) Kubelet, kube proxy and Container Engine
+
+   1. Kubelet: It’s the main worker on each node that takes orders from the master and ensures that the containers are running properly.
+   2. Kube-proxy: It helps your applications communicate with each other, by managing the network traffic, Its is responsible for assigning IP address to the pod.
+   3. Container Engine: This is responsible for running container.
+
+Kubernetes helps make sure that your applications can scale, heal themselves (restart if something fails), and work together smoothly.
+
+K8s-Cluster-Installation-Steps
+==============================================
+
+Step1:
+# Update the OS
+apt-get update
+
+# Run on master node
+sudo hostnamectl set-hostname k8s-master
+
+#Run on worker node
+sudo hostnamectl set-hostname k8s-worker
+
+Step2: Run the common.sh script on both master and worker nodes
+sh k8s-common.sh
+
+Step2: Run Only on K8s-Master Node
+sudo kubeadm init 
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
+kubectl get nodes
+
+Step3: Join both the worker nodes to the cluster, command is already there is output, just copy paste on the worker nodes,
+Note: run kubeadm join with sudo
+
+kubeadm join 172.31.46.231:6443 --token 9bip0h.6vkeqqddhy122zkb \
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Introduction to yaml:
+---------------------
+- yaml is file format 
+- yaml is space indented (equal spaces to be given)
+- in yaml data would be in key value format (Dictionary format)
+- always whenever we write yaml file it will start with --- & ends with ...
+- # Comments start with a hash symbol
+- yaml files extension can be .yml (or) .yaml
+
+
+ex1: write yaml file on indian cricket team:
+
+---
+coach: dravid 
+batsmens:
+  - virat
+  - rohit
+  - rahul
+bowlers:
+  - bumrah
+  - shami
+wicketkeeper: rahul
+...
+
+to validate our yam file goto www.yamllint.com paste & check for file format / indentation check.
+it shows our yaml is valid or not.
+
+ex2: write yaml file on devops tools:
+-------------------------------------
+
+---
+os: 
+  linux: learned
+  windows: needtostart
+versionscontroltool: git
+containerizationtools:
+  - docker
+  - containerD
+  - podman
+orchestartiontools:
+  kubernetes: moreused
+  dockerswarm: lessused
+...
+
+
+example 3 of yaml file:  geographical aspects of country india in yaml format?
+------------------------------------------------------------------------------
+
+---
+india:
+  karnataka:
+    Mysore: culturecapital
+    bangalore: capital
+  mahararashtra:
+    - mumbai
+    - pune
+  andhrapradash:
+    - hyderabad
+...
+
+explaination of above yaml file.
+----------------------------------
+india ==> we can call that as parent element or root element of yaml file
+  karnataka, maharashtra & andhrapradash are children of Root element (india)
+  Note: Elements are considered as partent & children are considered only on spaces basis(give two spaces).
+
+how to comment a line in yaml?
+------------------------------
+  start a line with # (hash)
+
+
+Assignment:
+-----------
+ create few yaml files & try to validate
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+YAML files in kubernetes:
+--------------------------
+In K8S These yaml files are also called as manifest files (or) definition file. 
+
+As a devops engineeras, we need to create a yaml files  ( .yml )   file 
+
+What this yaml file contains?
+1) how many containers needs to be create in a pod.
+2) what name we need to give for pod & container. 
+3) what image we need to use to create container.
+etc...
+
+
+All the above information will be available in k8s yaml file.
+
+This yaml file / definition file / manifest file should be provided to kuberneted master.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+
+
+Note:
+-----
+k8s is going to manage our containers but k8s cannot directly manage a containers so k8s will manage our containers indirectly through its own object called as pod ?
+
+
+where do we use yaml files in devops?
+-------------------------------------
+  kubernetes objects is written in yaml file format.
+  ansible playbooks is written in yaml file format.
+  docker compose is written in yaml file format.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+kubernetes objects:
+-------------------
+components which we are going to create in k8s are called k8s objects.
+
+eg: pod , replicaset , deployment, secrets , service etc 
+
+Kubernetes uses various types of objects.
+
+1. Pod:  
+   Pod is the basic k8s object.
+ - Pod is just a layer of abstraction on top of a container.
+ - Inside the pod, we have the container. 
+   kubectl commands will work on the pod and pod communicates there instructions to the container.
+ - Pods are ephemeral in nature, so data inside the pods will gets deleted once pod is finished its operation.
+
+2. Service Object: 
+   This object is used for port mapping and network load balancing.
+
+3. NameSpace: 
+    This is used for creating partitions in the cluster.
+    pods running in  a namespace cannot communicate with other pods running in other namespace.
+
+4. Secrets: 
+    This is used for storing & passing encrypted data to the pods.
+
+5. ReplicaSet / Replication COntroller: 
+    This is used for managing multiple replicas of a pod to perform activities like load balancing and autoscaling.
+
+6. Deployment: 
+    This is used for performing all activites that a ReplicaSet can do. It can also handle rolling updates
+
+
+---------------------------------------------------------------------------------------------------------------------Create Pod 
+-------------------------
+All the commands in kubernetes sill start from kubectl
+ 
+what is command to create containers in docker?
+
+docker run --name <containername> <image_name>
+
+kubectl run --image <image_name> <pod_name>
+
+kubectl run --image tomee mypod1  
+
+
+https://killercoda.com/killer-shell-ckad/scenario/playground
+
+
+
+How to create pods in kubernetes ? :
+------------------------------------
+
+Pods can be creted in two ways
+1. YAML files:
+     - yaml files used in k8s are also called as definition files (or) manifest files.  
+     - yaml file based creation of k8s objects are preffered as we can keep files used for objects creation.
+	 
+	 we will write definition files (or) manifest files & execute these file to create pods.
+
+2. commands: 
+     - Through command line (CLI) we can create k8s objects as well
+     - creating k8s from cli is not best practice
+     - preffred only, if we want to create a k8s object quickly.
+
+     syntax: to create pod from commands  (CLI)
+             kubectl run --image <image_name> <pod_name>
+  
+             kubectl run --image tomee tomcat-pod
+          
+    	     kubectl run --image <docker_imageName> <pod_name>
+     
+	     kubectl run --image tomee tomcatpod
+              
+	     kubectl run --image jenkins/jenkins myjenkinspod
+			 
+	     kubectl run --image alpine myalpinepod
+
+
+To see list of all pods:
+------------------------
+kubectl get pods
+
+
+To see list of nodes in a cluster:
+----------------------------------
+kubectl get nodes
+
+To delete any pod:
+------------------
+ kubectl delete pods <pod_name>
+
+To know on which worker node, pod is running:
+----------------------------------------------
+kubectl get pods -o wide
+( -o wide ==> stands for deatiled output )
+
+-----------------------------------------------------------------------------------
+
+Note:
+-----
+in kubernetes we will call yaml files as definition files or manifest files ==> both are same
+
+if i write yaml file to create pod ==> 
+
+How to write manifest files or yaml files in k8s ?
+==================================================
+
+Kubernetes performs container orchestration by using definition files. 
+Definition file, will have 4 top level elements.
+
+to create any object in k8s we need to write yaml files
+
+all yaml / manifest files in k8s will contain 4 top level elements:
+
+1. apiVersion: apps/v1
+2. kind: 
+3. metadata:
+4. spec:
+
+
+
+1. apiVersion:
+-------------------
+Depending on type of kubernetes object we want to create, there is corresponding code library we want to use.
+
+   Kind     			       apiVersion
+   ==================================================  
+   Pod       			       v1
+   Replication COntroller	       v1
+   Service   			       v1
+   NameSpace     		       v1
+   Secrets         		       v1
+   ReplicaSet       		       apps/v1
+   Deployment      		       apps/v1
+
+[P,R,S,N,S,R,D]
+
+2. kind: Pod
+----------
+Refers to kubernetes object which we want to create.
+Ex: Pod, Replicaset, service etc
+
+
+3. metadata:
+-----------------
+
+Additional information about the kubernetes object
+like name, labels  etc
+
+  note: labels are used for filtering 
+
+
+4. spec (speicifications):
+----------
+Contains docker container related information like image name, environment variables, port mapping etc.
+
+spec block 
+
+spec:
+  containers:
+  - name: <name_of_container>
+    image: <name_of_image>
+
+
+
+Note:
+-------
+- command to get detailed information about a containers?
+  docker inspect containername/container id
+
+- command to get detailed information about a pod?
+  kubectl describe pods <pod_name>
+  
+  1. it will give detail about 
+     - name of pod,
+     - on which node pod is running
+     - labels assigned for pod
+     - IP of pod
+  
+  2. in containers block give detail about
+     - Containers name & container ID
+     - Image used to create container.
+     - Details about port / volume mapping & environmentvariables etc
+--------------------------------------------
+
+
+Creating PODS from manifest files:
+===================================
+
+Note:
+----
+- in k8s we will call YAML files as manifest files or definition files.
+- 1st element of manifest file apiVersion is written in camel case letters ==> apiVersion: v1
+- 2nd element kind will have first letter in uppercase
+   eg: kind: Pod , kind: Replicasets
+
+------------------------------------------------------------------------------------
+
+Ex1:  Create a pod definition file to start apache tomcat in a pod. 
+Name the pod as tomcat-pod, name the container as tomcat-container. 
+
+vi pod-definition1.yml
+
+# what do we need to create?
+# pod ==> podname ==> tomcat-pod, container-name ==> tomcat-container , image ==> tomee , label app: tomcat_label & author: bharath
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-pod
+  labels:
+    app: tomcat_label
+    author: bharath
+spec:
+  containers:
+  - name: tomcat-container
+    image: tomee
+...
+
+:wq!
+
+
+kubectl create -f pod-definition1.yml
+-----------------------------------------------------
+
+============================================
+Command to run the definition file:
+-----------------------------------
+kubectl create -f <filename>.yml
+(or)
+kubectl apply -f <filename>.yml
+
+
+To delete the pod created from the any file:
+---------------------------------------------
+kubectl delete -f  <filename>.yml
+
+
+
+==================================================
+kubectl get nodes ==> show all nodes of cluster & thier status
+
+kubectl get pods ==> shows all the pods
+
+kubectl run --image <imagename> <podname> ==>  to create pod from command directly 
+
+kubectl delete pod <podname>  ==>  to delete pod 
+
+------------------------------------
+Note:
+-----
+how to login into container in docker?
+
+  docker ==> docker attach <container-name> 
+
+  docker exec -it <containername> /bin/bash
+  note: /bin/bash command will open linux terminal inside the container
+     
+
+
+How to login into pod ?
+-----------------------
+  kubectl exec -it <podname> -- <linux_command>
+  kubectl exec -it mytomcatpod1 -- /bin/bash
+  note: /bin/bash command will open linux terminal inside the pod/container
+
+  to come out of pod use ==> exit (this will not stop container)
+
+
+
+How to run any command in pod from k8s master ?
+------------------------------------------------
+
+kubectl exec -it <pod_name> -- <linux_command>
+
+eg: to get container os information
+
+kubectl exec -it <pod_name> -- cat /etc/os-release 
+
+
+Recap of Important pointers about containers:
+---------------------------------------------
+1. containers will run only till default process is running 
+     that is whatever mentoined CMD / ENTRYPOINT instruction in any dockerfile
+	 
+2. Containes are ephemeral(shortlived) by default.
+     that is once containers is deleted, all data inside containers will get deleted permanantely
+	 
+3. Containers will work on PROCESS ISOLATION principle.
+     that is process running inside a container will be completely isolated from any other process in docker host
+
+
+--------------------------------------------------------------	###To create environment variables in pod manifest files:
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+syntax in spec block is:
+
+spec:
+  containers:
+  - name: <container-name>
+    image: <image-name>
+    env:
+    - name: <variable_name>
+      value: <variable_value>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+# create a pod with below configurations.
+  - pod name ==> tomcatpod3 , image tomee & container tomeecontainer3 
+  - labels ==> type: webapptool & author: 
+  - environment variables==> sports football
+
+vi pod-definition2.yml
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcatpod3
+  labels: 
+    type: webapptool
+spec:
+  containers:
+  - name: tomeecontainer3
+    image: tomee
+
+...
+
+kubectl apply -f pod-definition2.yml
+
+
+
+to see env variables details in k8s master node use ==> 
+kubectl describe pod <pod_name> (observe env variables defined here)
+
+to see env variables details inside the pod/container use ==>
+login into pod
+kubectl exec -it <pod_name> -- /bin/bash
+
+echo $cricketer (from output - observe variable substitutions)
+echo $password (from output - observe variable substitutions)
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Port Mapping:
+
+Syntax / Template to write pod manifest file
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: <NameofPod>
+  labels:
+    <label-name>: <label-value>   
+#spec section - <Technical section, which specifies how our container needs to get created>	
+spec: 
+  containers:
+  - name: <NameOfTheContainer>
+    image: <imageName>
+    ports:
+    - containerPort: <portOfContainer>
+      hostPort: <hostport>
+      
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apachetomcatpod
+spec:
+  containers:
+  - name: tomcat-container-v2
+    image: tomee  # Replace with your desired Tomcat image
+    ports:
+    - containerPort: 8080
+      hostPort: 30010
+=============================================================================
+
+Commands recap:
+---------------
+kubectl create -f <object_file_name>.yaml --> To create a object with a definition file
+kubectl get pods --> To display all the pods on the cluster
+kubectl get pods -o wide --> To display more information of pods
+
+generic kubernetes commands that can be used across all kubernetes objcts(pods, replicasets, deploy,services..etc):
+
+kubectl get <object_name>  --> To display list of the <object_name>  in the cluster
+kubectl get <object_name>  -o wide --> To display more information of <object_name> 
+kubectl describe <object_kind> <object_name> --> To see the information about a particular object
+kubectl delete <object_kind> <object_name> --> To delete a k8s object
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+pod is smallest object which we can create in k8s, simillar to pods kubernetes also have other objects like replicasets, replication-controller , deployments , services etc...
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+***** important interview questions *****
+
+q1: what are labels in k8s?
+     - labels are user provided key-value pairs, using labels we can organize(group) Kubernetes objects
+     - using labels we can filter different Kubernetes objects
+     - Same label (key/value) can be assigned to multiple Kubernetes objects
+
+      ex: create a pod name as my-pod-2, container name as c2  use image nginx, with labels as environment: production & app: nginx
+	  observation on filtering pods using labels:
+      if we have multiple pods in our cluster & if we want to list only Pods which have label as ==> app:nginx 
+	  Kubectl get pods -l app=nginx
+
+q2: what are selectors?
+    - Selectors helps to find and use the k8s objects based on their labels.
+
+q3: why do we need to use labels & selectors?
+    - By using labels and selectors, it will be easier to manage complex applications in Kubernetes.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Controller- manager:
+--------------------
+controller manager is the brain behind the orchestration, it always monitor actual state of objects with that of desired states.
+
+Controller manager ==> ( actual state == desired state)
+
+controller manager objects includes following
+1. Replication-controller --> older feature (not used now a days)
+2. Replicasets --> newer feature
+3. Deployments.
+4. Deamonsets.
+
+
+ReplicaSet:
+-----------
+ - ReplicaSet is a k8s object that ensures a specified number of replica Pods are running at all times.
+ - If a Pod managed by a ReplicaSet fails or is deleted, the ReplicaSet will automatically create a new replica to replace it
+ - using ReplicaSets we can achieve high availablity, load balancing and scaling.
+
+
+Why do we need to use ReplicaSet ?
+-----------------------------------
+ Suppose if we deploy only one pod of the application and by any chance if it fails after the deployment, then the application is no longer accessible to the user. 
+ ReplicaSet is nothing but the copies/replicas of the pod. So to keep the desired instances of pods running, we required to go with the ReplicaSet.
+
+
+
+Note on replicaset manifest file:
+----------------------------------
+- ReplicaSet uses elements like "replicas","selector" & "template" field in its 'spec' section.
+- Template contains all pod related information so it can be also called as pod template
+- copy pod defintion file contents ==> paste it under "template" ==> without apiversion & kind
+ 
+
+SYNTAX of ReplicaSet manifest file:
+------------------------------------
+apiVersion: apps/v1
+kind: ReplicaSets
+metadata:
+  name: <replicaSetsName>
+  labels:
+    <key>: <value>
+spec:
+  replicas: <noOfReplicas>
+  selector:
+    matchLabels:
+      <key>: <value>
+  template: # POD Template
+    metadata:
+      name: <PODName>
+      labels:
+	    <key>: <value>
+    spec:
+    - containers:
+      - name: <nameOfTheContainer>
+	    image: <imageName>
+
+...
+
+
+
+ex1: create a replicaset object with 3 replicas of tomcat pod 
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-tomee-replicaset
+  labels:
+    author: bharath
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      author: bharath
+  template:
+    metadata:
+      name: tomcat-pod-v2
+      labels:
+        author: bharath
+    spec:
+      containers:
+      - name: tomcat-container-v2
+        image: tomee
+        
+...
+
+Observations:
+--------------
+root@k8s-master:~# kubectl get rs
+NAME                 DESIRED   CURRENT   READY      AGE
+my-tomee-replicaset     3         3         3       46m
+root@k8s-master:~#
+
+DESIRED --> number of pod replicas is configured to maintain. Here, it's set to 3
+CURRENT --> actual numbers of pods currently running, This should match the desired number if the system is functioning normally
+READY --> The number of pod replicas that are ready to serve traffic. It should also match the current number if all pods are healthy; here, it is 3.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+create replicaset with name as my-second-rs, image nginx:1.24.0-alpine
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-second-rs
+  labels:
+    creator: mohan
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      creator: mohan
+  template:
+  #paste the podmanifest file without apiversion & kind
+    metadata:
+      name: mypodx
+      labels:
+        creator: mohan
+    spec:
+      containers:
+      - name: c1
+        image: nginx:1.24.0-alpine
+...
+
+
+kubectl create -f <object_file_name>.yaml --> To create a rs object with a definition file
+kubectl get pods  ( observe all pods created started by replicasets)
+
+
+to list replicasets:
+kubectl get replicasets (or) kubectl get rs
+
+to delete replicasets:
+kubectl delete rs <replicasets-name>
+
+
+Note: 
+delete few pods created using replicasets & observe that new pods getting created automtically by controller manager component via replicasets 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Assignment:
+1. create a pod manifest file with below configurations.
+  - pod name ==> jenkinspod , image jenkins/jenkins & container jenkinscontainer 
+  - labels ==> use: cicdtool
+  - environment variables==> stage1 build, stage2 test, stage3 deploy
+
+
+
+2.  create a pod manifest file 
+   - pod name ==>  apachetomcatpod. 
+   - name the container as tomcat-container-v2. 
+   - also map container port 8080 to host machine on 4040
+
+3.Create pod with 2 containers, login into second container & check os information
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Deployment Object:
+------------------
+This is also an high level k8s object ,
+which can be used for running multiple replicas of a pod with other features like scalling, load balancing and perform rolling updates.
+
+Deployment makes sure that desired number of pods (replicas) specified in the manifest file, are always up and running. If a pod fails to run, deployment will remove that pod and replace it with a new one.
+
+deployments comes with advanced features like:
+- update application to newer versions without downtime.
+- rollback to older deployment versions.
+- scale deployment up or down.
+
+
+
+How does a Deployment ensure high availability?
+----------------------------------------------
+deployment ==creates==> replicasets ==creates==> pods ==creates==> Containers( our application runs inside the container)
+
+Deployments maintain high availability by managing replica sets. 
+If a Pod fails due to any reason, the Deployment removes the failed pod with new pod & maintains the desired state ensuring high availablity.
+
+deployment startegies used in kubernetes?
+-----------------------------------------
+
+   i. Recreate strategy: 
+       - deleting all pods of old version at once & creating new pods with new version.
+	   - this startegy we can observe application downtime.
+	   
+   ii. Rolling update strategy: 
+       - it will gradually delete 1 old version of a pod & bring 1 new version of a pod till all old pods gets replaced
+       - in this startegy we will not see any applocitaion downtime.
+	   - this is the deafult startegy used in k8s
+
+
+Syntax / Template to write deployment manifest file
+---------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <DeploymentName>
+  labels:
+    <key>: <value>
+spec:
+  replicas: <noOfReplicas>
+  selector:
+    matchLabels:
+      <key>: <value>
+  template: # POD Template
+    metadata:
+      name: <PODName>
+      labels:
+	    <key>: <value>
+    spec:
+    - containers:
+      - name: <nameOfTheContainer>
+	    image: <imageName>
+
+...
+
+
+create a deployment-defintion file with nginx:1.7.9 image with 4 replicas:
+--------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx-deployment
+  labels:
+    author: bharath
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      author: bharath   
+  template:
+  # here paste content of pod manifest file without apiversion & kind 
+    metadata:
+      name: nginx-pod
+      labels:
+        author: bharath
+    spec:
+      containers:
+      - name: container2
+        image: nginx:1.7
+
+
+
+kubectl create -f <object_file_name>.yaml --> To create a deployment object with a definition file
+kubectl get pods  ( observe all pods created started by deployment)
+
+
+to list deployment:
+kubectl get deployments (or) kubectl get deploy
+
+to delete deployment:
+kubectl delete deployment <deployment-name>
+
+to know complete details about deployments:
+kubectl describe deployment <deployment-name> 
+
+it will show details about number of replicas used, stategy type, image used etc...
+
+
+Note:
+-----
+
+1. Auto-Healing feature With Deployment Controller:
+---------------------------------------------------
+whenever we delete a pod which is running from any controller objects (i.e  rs / deployment) new pod will get created this feature can be called as Auto-healing
+
+Deleting one the pods manually in (i.e  rs / deployment) and observe the auto-healing behaviour of deployment
+
+
+
+*** important interview question ***
+2. what all Deployment strategies used in kuberenets:
+-----------------------------------------------------
+   i. Recreate strategy: 
+       deleting all pods of old version at once & creating new pods with new version , this startegy we can observe application downtime.
+	   
+   ii. Rolling update strategy: 
+       - it will delete 1 old version of a pod & bring 1 new version of a pod 
+       - this startegy we will not see any downtime.
+	   - this is the deafult startegy used in k8s
+    
+
+
+
+3. How to scale the deployment in k8s (scale up --> increasing the replicas of a pod, scale down --> decreasing the replicas of a pod):
+-------------------------------------------------------------------------------------------------------------------------------------
+    kubectl scale deployment <deployment_name> --replicas <num_of_replicas>
+	
+	if traffic coming to our applications increases, then we need to increase the number of replicas & when traffic reduces we can descrease the number of replicas Agenda:
+----------
+- Deployment objects
+  -- increase replicas for a deployment
+  -- rolling update deployments
+  -- rollback a deployment
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+in deployment manifest-file:-
+
+replica:10
+strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 30%
+    type: RollingUpdate
+--------------------------------------------------
+
+What is maxSurge and maxUnavailable in k8s deployments?
+-------------------------------------------------------
+maxSurge will speedup the rolling update process
+maxSurge allows more Pods to be created temporarily to speed up the rolling update process.
+
+
+maxUnavailable will ensures the safety of rolling updates.
+maxUnavailable ensures that a minimum number of Pods are always available during the update, preventing too much downtime.
+
+For example, in a deployment with 10 replicas, 
+==> if maxSurge is set to 2 (or 20%), Kubernetes will create up to 2 extra Pods (12 total),
+==> if maxUnavailable is set to 2 (or 20%), only 2 Pod can be unavailable at any given time.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+in containerized applications ==> if we are updating our application to next version means, we are create new docker image with newer tag, we use the updated docker image in our manifest files
+
+nginx:1.7 ==> nginx:1.8 ==> nginx:1.9 ==> nginx:1.10
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Deployment ( continued......)
+-----------------------------
+create deployment with image ==> nginx:1.7 & 3 replicas
+
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: nginx-deployment
+  labels:
+    author: bharath
+    environments: staging
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      author: bharath
+      environments: staging
+  template:
+    metadata:
+      name: nginx-deployment-v1
+      labels: 
+        author: bharath
+        environments: staging 
+    spec:
+      containers:
+      - name: my-nginx-container
+        image: nginx:1.7
+        ports:
+        - containerPort: 80   
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+RollingUpdate startegy is default startegy type used in kubernetes
+
+Deployment based Practical scenarios:
+
+case 1: deploy a new application version (new image ==> nginx:1.8) using rolling deployment startegy?
+---------------------------------------------------------------------------------------
+
+
+developers ==> nginx:1.7 ==> nginx:1.8 ==> nginx:1.9
+
+if we update from version to another version of my application, only image name & tag (version) will be updated in deployment manifest file.
+
+
+syntax:
+kubectl set image deployment <deployment_name> <container_name>=<image_to_be_updated> 
+
+
+kubectl set image deployment nginx-deployment  my-nginx-container=nginx:1.8 --record=true
+	
+
+#To check the revision hitory
+
+kubectl rollout history deployment  <deployment_name>
+
+kubectl rollout history deployment  nginx-deployment
+
+case 2: deploy a new application version again (from nginx:1.8 to new image ==> nginx:1.9) using rolling deployment startegy?
+---------------------------------------------------------------------------------------
+
+kubectl set image deployment nginx-deployment  my-nginx-container=nginx:1.9 --record=true
+
+
+case 3: code deplyed in Version 1.9 has issues, we need to rollback to previous version (from latest version nginx:1.9 to old version ==> nginx:1.8)
+---------------------------------------------------------------------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Kubectl rollout options:
+=======================
+1.How to check a deployments history ?
+-------------------------------------------
+
+kubectl rollout history deployment <deployment_name>
+
+kubectl rollout history  deployment  nginx-deployment
+
+
+2. How to rollback deployment to previous version?
+-----------------------------------------------
+
+kubectl rollout undo deployment <deployment_name> 
+
+kubectl rollout undo  deployment  nginx-deployment
+
+
+(or) < to rollback to specific version >
+kubectl rollout undo deployment <deployment_name> --to-revision=<revision_number>
+kubectl rollout undo deployment nginx-deployment --to-revision=1
+
+
+3. How to Check the status of the rollout using status command ?
+-------------------------------------------------------------
+kubectl rollout status deployment <deployment_name>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Note:
+----
+How to expose GUI based application in docker 
+ In Dockerfile ==> EXPOSE 8080
+ docker run --name c1 -p <DockerhostPort>:<contasinerPort> <image_name> 
+ 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Service Object:
+---------------
+
+service objects is used to expose our application (port mapping)
+service object will provide a static ip address to our application running in pods.
+
+
+Service Object we use 3 ports in service manifest file, which are
+1. Target port -  Its is port on container 
+2. port - Refers to service reference port.
+3. hostPort -  Refers to host machine port to make it accessable from external network.
+
+
+*** important interview question ***
+
+What are different types of Service & difference between those ?:
+----------------------------------------------------------------
+1. clusterIP:
+    - It exposes the service within the Kubernetes cluster only.
+    - ClusterIP is used when we want the pods in the cluster to communicate with each other and not with external network(from internet or browser).
+    - This is default type of service object used in kubernetes.
+  * - using clusterip type service pod-to-pod communication will happen within the cluster
+
+
+2. nodePort: 
+   - It exposes the service both in and outside the cluster
+   - It exposes the service on each Worker Node’s IP at a static port (i.e., which is called NodePort).
+   - nodePort can be used, if we want to access the pods from an external network (Internet or broswer).
+   - NodePort must be within the range from 30000-32767
+
+
+3. LoadBalancer:    
+   - It exposes the service both in and outside the cluster, its the most preffered way of exposing a service in k8s.
+   - It exposes the service externally using cloud providers load balancer ( AWS - ELB-> Elastic load balaNcers).
+   - whenever the LoadBalancer service gets created it will also automtically create NodePort and ClusterIP services.
+
+
+
+
+how does pods-to-pod communication happens in kubernetes cluster?
+----------------------------------------------------------------
+using services (type-->clusterip) pod-to-pod communication will happen within the cluster
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Ex: create a deployment using jenkins image with 1 replicas & label environment: staging
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    environment: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      environment: staging
+  template:
+    metadata:
+      labels:
+        environment: staging
+    spec:
+      containers:
+      - name: jenkins-container
+        image: jenkins/jenkins
+		
+
+
+Expose the jenkins pods created as a part of above deployment ?
+create a servce oject of type nodePort & expose the application
+
+vi my-jenkins-service.yaml
+
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: my-jenkins-service
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 8080     #this is container port ==> jenkins container
+    port: 8080           #this is service objects refernce port
+    nodePort: 30001      #this is port assigning to worker node
+  selector:             
+    environment: staging
+
+Important Note on service:
+--------------------------
+service object will never creates pods.
+service object searches for all pods which have labels mentioned under selector keyword of service manifest file & expose those pods.
+in above example it will look for pods which have label as environment: staging, as jenkins pods have those labels (environment: staging) , it will expose all the jenkins pods on nodeport 30001. 
+
+How to access application from gui?
+-----------------------------------
+http://<public_ip_of_any_node>:<nodePort_portnumber>
+http://3.90.88.139:30001
+   
+
+**********************************************************************************************************
+ deploying zomato-like application as k8s deployment
+**********************************************************************************************************
+NotE: before starting this assignment delete all pods /deployments present in your cluster, as this application needs more resources 
+
+
+# create deployment named -- zomato deployment, replicas 1 , image ==> acecloudacademy/zomato-app-image:latest
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: zomato-deployment
+  labels:
+    type: food-delivery-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: food-delivery-app
+  template:
+    metadata:
+      name: zomato-pod
+      labels: 
+        type: food-delivery-app
+    spec:
+      containers:
+      - name: my-zomato-container
+        image: acecloudacademy/zomato-app-image:latest
+...
+
+create a service of type nodeport to expose zomato application
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-zomato-service
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 3000     #this is container port ==> zomato listening port on container
+    port: 3000           #this is service objects refernce port
+    nodePort: 30003      #this is node port assigning to all worker node
+  selector:
+    type: food-delivery-app
+...
+
+create service, once service matches pods using lables & slector & pods get exposed, access from GUI for zomato application
+
+
+Assignment:
+----------
+
+- Create a deplyment of netflix app4
+    image=acecloudacademy/netflix-clone-app:v1
+    replicas=2
+    netflix application runs on port 80 (container port)
+    expose this application to internet @ port 31111Agenda:
+-------
+- daemonsets
+- Volumes
+- ConfigMaps
+- Secrets
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Daemonsets:
+-----------
+- daemonsets are another type of controller k8s object like rc, rs & deployments.
+- daemonsets will run only 1 copy of a pod in each node of cluster.
+- whenever new node gets added to the cluster, a new daemonset pod gets added to that new node automatically.
+
+UseCases:
+--------------
+1.Log Collection: DaemonSets are used to deploy logging agents on every node for comprehensive log collection in Kubernetes.
+
+2.Monitoring: DaemonSets deploy monitoring agents (e.g., Prometheus Node Exporter) on each node to gather metrics for centralized monitoring in Kubernetes.
+
+3.Security Monitoring: DaemonSets are employed for deploying security-related agents (e.g., Falco) on each node to monitor and detect security events in   Kubernetes
+
+
+Note: in any k8s cluster kube-proxy component is running as deamonset only
+
+
+daemonset-manifestfile.yaml
+---------------------------
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-deamonset
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx
+        type: load-balancer
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19
+		
+		
+Observation: in all worker nodes of cluster, 1 pod of deamonset will be running all the time
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Volumes:
+--------
+- containers are ephemeral, ephemeral means containers can start and stop frequently.
+- By default, the Pod does not store created data.
+- In simple terms, volume is nothing but a folder in the worker node. The data created inside the Pod will be transferred to the worker node folder to avoid  data loss using the volume concept when the Pod is deleted or restarted.
+- data means files itself
+- persist means saving / storing 
+
+Kubernetes  volumes:
+--------------------
+In Kubernetes, a volume is like a storage hdd unit that can be attached to a container running inside a pod.
+eg: Just like how we can attach an Pen drive to your computer to store files separately from your computer's main storage
+
+containers are ephemeral by nature, that is when a pod/container gets restarted or stopped or gets killed files / data stored inside containers will also gets deleted, inorder to preserve the data without woorying about container / pod lifecycle we have to use k8s volumes.
+
+Kubernetes volumes allow containers in a pod to store and access data separately from the container's main filesystem.
+
+why do we need to store the data?
+----------------------------------
+Imagine if have a container running a web application server (eg: tomcat)  that generates log files or a database container (eg: mysql) that stores important data. 
+These containers need a way to save and retrieve data even if they stop running or even if the pod gets moved to another node in the Kubernetes cluster. 
+
+what all data we need to keep / store in kubernetes volumes?
+-------------------------------------------------------------- 
+  log files, configuration files, sshkeys , database related files
+  
+advantages of volumes:
+---------------------
+1. data persistence
+2. data sharing: we can share the data(files) with different containers, easy data exchange
+3. High Availability: 
+     By using Kubernetes volumes, your data is no longer tied to a specific container or node. 
+	 Even if a pod fails or is moved to another node, the data in the volume remains accessible, ensuring high availability of your application.
+4. Data Backup and Restore
+
+
+
+Kubernetes Volumes have 3 types majorly:
+----------------------------------------
+
+1. EmptyDir: 
+    - This is like a temporary volume. 
+    - these gets created when the pod starts and is deleted when the pod stops.
+    - It's useful for sharing files between containers, when we are running multiple containers in the same pod.
+      
+	  EMPTYDIR type volumes DEPENDENT ON POD LIFE CYCLE, so this is not recommended type
+	
+2. HostPath: 
+    - using hospath type pods(containers) can store & access files on the worker node's filesystem.
+	- It's like mounting a specific folder from the host machine (or worker node) into the container.
+	  
+	  HostPath type volumes DEPENDENT ON NODE LIFE CYCLE, if a worker node gets deleted data stored in that worker node will be lost permanately.  So this is also not recommended type
+
+3. PersistentVolume (PV): 
+    - Persistent volume is a folder. The folder can be a local or cloud storage folder (AWS cloud - EBS service) which will store the data genereated by containers.
+    - This is a network-attached storage space that can be dynamically provisioned or pre-allocated. 
+	- It's like an external hard drive (external HDD /pendrive like) that's shared across different pods / nodes and can be mounted to any pod that needs it.
+	
+	  PersistentVolumes are not dependent on POD LIFE CYCLE / NODE LIFE CYCLE, so these are CLUSTER WIDE VOLUMES,
+    so these are most recommended type to store the data	
+
+
+
+
+Persistent volume claims (PVC):
+-------------------------
+PVC are like tickets that can grant permission to a pod to use persistent volumes (PV)
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note:
+------
+1. Using k8s playground for free:
+---------------------------------
+  killercoda will give us kubernetes setup , each session which will be valid for 60 minutes.
+  login to https://killercoda.com/playgrounds/scenario/kubernetes using dockerhub credentials
+  & start
+
+2. Note on Creating all k8s manifestfiles using Visualstudio code:
+---------------------------------------------------------------
+  click on extensions in left side bar of Visualstudio & search for kubernetes plugin, install kubernetes plugin.
+   next create a new file & salect language yaml --> type pod --> from suggestion box select --> kubernetes pod suggestion --> pod template file will be ready --> substitute or customize the values according to your use case.
+   simillarly we can generate any k8s object manifest file like this using visual studio code.
+
+
+Note:
+-----
+
+lifecycle --->  infant -- child -- youth -- adult -- older -- die 
+container/pod --> creating -- running -- stopped
+
+
+controller & scheduler will decide where to schedule the pods
+
+master node 
+worker node1
+worker node2  -- if pod gets created here (in hostpath type volume), volume gets created only in this worker node
+worker node3
+
+
+emptydir -->  depends on POD lifecycle used to store data only to available for 1or more containers running in same pod
+hostPath --> depends on node lifecycle
+persistent volumes (google-drive <--> phone) -- doesent depend on pod or node lifecycles also volume will be accesible on all worker nodes 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Config Maps & Secrets:
+----------------------
+ConfigMaps &  secrets are k8s objects, that let us store configuration data outside of a Pod (i.e moving out configuration outside of pod manifest files).
+It also lets you dynamically inject the data into a Pod at run-time (at time of pod creation).
+
+ConfigMaps and Secrets are ways of separating the configuration data from the Pod / Deployment manifests, which makes them more reusable.
+
+
+ConfigMap: 
+----------
+- configmaps are used to store configuration data in key value format.
+- we can use/inject configmaps to pods as environment variables.
+
+  
+how to create configmaps?
+  we can create configMaps in two ways 1. using command line arguments  & 2. using manifestfiles also.
+
+syntax:  
+  kubectl create configmap <configmap_name> --from-literal <key>=<value>
+  
+  kubectl create configmap my-config-1 --from-literal=USERNAME=vijay
+  
+
+Secrets:
+--------
+What is a Kubernetes Secret, and why is it used?
+------------------------------------------------
+A Secret is an object in Kubernetes used to store sensitive information, such as passwords, ssh keys  certificates.
+it's used to separate configuration data from the pods (i.e pod manifest files) and ensure security.
+
+How are Secrets different from ConfigMaps?
+--------------------------------------------
+Secrets are used to store sensitive data, while ConfigMaps are used for non-sensitive configuration data.
+ 
+
+
+Kubernetes secrets are secure objects to store sensitive data such passwords. 
+we can use/inject secrets to pods in two types.
+   1. as environment variables.
+   2. as volumes.
+
+how to create secret?
+  we can create secrets in two ways 1. using commands & 2. using manifestfiles also.
+
+syntax:
+  kubectl create secret generic <secret_name> --from-literal <key>=<value>
+  
+  kubectl create secret generic my-secret-1 --from-literal=PASSWORD=mypasswd@123
+
+
+
+Injecting Config Maps and Secrets in Pods as environmental variables:
+-------------------------------------------------------------------
+
+create a nginx pod using configmaps & secrets created earlier
+  - use configmap my-config-1 to get USERNAME 
+  - use secret my-secret-1  to get PASSWORD 
+
+-------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mycontainer
+    image: nginx
+    env:
+    #k8s will refer configmap named as my-config-1 & fetches value for key in cm which is ==> USERNAME & substitutes its value (bharath) while creating pod  
+    - name: USERNAME
+      valueFrom:
+        configMapKeyRef:
+          name: my-config-1
+          key: USERNAME
+
+    #k8s will refer secret named as my-secret-1 & fetches value for key in secret which is==>password&substitutes its value(mypasswd@123)while creating pod
+    - name: PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: my-secret-1
+          key: PASSWORD
+
+configmap & secrets observations:
+---------------------------------
+
+login in to mypod & print environment variables ==> observe configmap & secrets variable substitution 
+
+kubectl exec -it mypod -- bash
+
+ubuntu@k8smaster:~$ kubectl exec -it mypod -- bash
+root@mypod:/#
+root@mypod:/# echo $USERNAME
+bharath
+root@mypod:/# echo $PASSWORD
+mypasswd@123
+root@mypod:/#
+
+
+How are Secrets different from ConfigMaps?
+- Secrets store sensitive data, while ConfigMaps store non-sensitive configuration data.
+
+What are the best practices for managing Secrets in Kubernetes?
+- Best practices for managing Secrets include limiting access, regularly rotating secrets, and avoiding storing plaintext secrets in version control.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+interview questions:
+--------------------
+- what are volume mounts & its types?
+- why do we need to use volumes in k8s?
+- difference between emptyDir & hostPath volume types?
+- what are secrets & configMaps?
+- what is DaemonSets?
+
+ASSIGNMENT:
+-----------
+- What is the default resources (memory & cpu) used in any pods?
+Ans: By default, Kubernetes does not assign specific resource limits or requests for CPU and memory to a pod unless you explicitly define them. If you don’t specify how much CPU or memory your pod should use, Kubernetes will allow the pod to use as much as it needs, within the capacity of the node.
+
+- what is resource quotas
+Ans: This defines the minimum amount of CPU and memory a pod needs to run.
+
+- create a pod & create 2 blank files using commands & args option in manifest file.
+ Note: check k8s documentation from below link https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+Ans:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: create-files-pod
+spec:
+  containers:
+  - name: file-creator
+    image: busybox   # Using a minimal BusyBox image
+    command: ["/bin/sh", "-c"]
+    args: 
+      - touch /tmp/file1.txt /tmp/file2.txt; 
+        sleep 3600; # Sleep to keep the pod running for an hour
+    volumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp
+  volumes:
+    - name: tmp-volume
+      emptyDir: {}  # A temporary directory to store the files
+  restartPolicy: OnFailure
+
+
+- Assign specific resource cpu & memory usage limit for containers in pod manifestfile
+  https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+Ans:
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: create-files-pod
+spec:
+  containers:
+  - name: file-creator
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args: 
+      - touch /tmp/file1.txt /tmp/file2.txt; 
+        sleep 3600; # Sleep to keep the pod running for an hour
+    volumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp
+    resources:
+      requests:
+        memory: "64Mi"  # Minimum memory the container needs
+        cpu: "250m"     # Minimum CPU (250 milliCPU = 25% of one CPU core)
+      limits:
+        memory: "128Mi" # Maximum memory the container can use
+        cpu: "500m"     # Maximum CPU (500 milliCPU = 50% of one CPU core)
+  volumes:
+    - name: tmp-volume
+      emptyDir: {}  # A temporary directory to store the files
+  restartPolicy: OnFailure
+...
+
+Key Sections for Resource Allocation:
+
+  1.  requests:
+        Memory: The container is guaranteed 64Mi (64 megabytes) of memory.
+        CPU: The container is guaranteed 250m (250 milliCPU, or 25% of one CPU core).
+
+    Requests ensure that Kubernetes reserves these minimum resources for the container.
+
+  2.  limits:
+        Memory: The container is limited to using a maximum of 128Mi (128 megabytes) of memory.
+        CPU: The container is limited to using a maximum of 500m (500 milliCPU, or 50% of one CPU core).
+
+    If the container exceeds these limits, Kubernetes might throttle CPU usage or terminate the pod if memory limits are breached.

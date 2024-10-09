@@ -1,0 +1,120 @@
+
+Running acecloudacademy_project  application as a container:
+------------------------------------------------------------------------------------------
+
+Pre-requisite tools for acecloudacademy_project : install java, maven & git in your docker host
+
+[ Note: To install java & maven on ubuntu: 1. apt update -y 2. apt install openjdk-11-jdk -y & 3. apt install maven -y ]
+
+
+
+
+Step 1 : Clone sourceCode of acecloudacademy_ProjectCode repo  from github
+--------------------------------------------------------------------------------------
+git clone https://github.com/Acecloudacademy/maven-repo.git
+
+Step 2: Build source sourceCode to generate artifacts:
+-----------------------------------------------------------------------
+cd maven-repo
+
+execute maven clean package command to generate artfiact(war file) gets generated inside directory called target
+mvn clean package
+
+
+Step 3:    Write Dockerfile and copy War file to Docker Image  :
+---------------------------------------------------------------------------------------------
+write Dockerfile with tomee as base image, copy the generated war file into webapps directory & use port 8080
+
+#vim Dockerfile
+
+FROM tomee:8-jre11
+COPY ./target/maven-web-application.war /usr/local/tomee/webapps/
+EXPOSE 8080
+
+
+
+& build image  ==> docker build -t <dockerhub_username>/<image_name>:<tag-name> .
+
+push built docker image to dockerhub (so that others can access / pull your image)
+
+
+Step 4:  Create the container using image created in previous step:
+------------------------------------------------------------------------------------------
+
+docker  run --name project_container -d -p 7070:8080 -it <image_name>:<tag-name> 
+
+
+
+Step 5:   Access Apache Tomcat from browser Interface:
+------------------------------------------------------
+
+access web application from browser
+
+http://<DockerHostIP>:<PORT>/maven-web-application
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ what are layers in docker images?
+---------------------------------
+each instructions in a Dockerfile is called as layer.
+each layer itself is an form of an image.
+
+
+why we need to reduce size of docker images ?
+---------------------------------------------
+Reducing the size of Docker images improves deployment speed, efficient resources utilization and security purposes.
+smaller sized Docker images improves the overall performance of Docker containers.
+
+How to reduce the size of an docker image?
+------------------------------------------
+1. we can use small sized base images. ex: alpine based images 
+2. we need to reduce the number of layers in dockerimage, by combining commands in RUN instruction
+3. we can multi-stage builds (Dockerfile with multiple FROM instructions)
+4. we can use .dockerignore file, to ignore unwanted files getting copied into image
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Multi-stage builds:
+-------------------
+In multi-stage builds, we can use multiple FROM statements in our Dockerfile. 
+Each FROM instruction can use a different base, we can selectively copy artifacts from one stage to another, leaving behind everything we don't want in the final image.
+
+
+
+Run full acecloudacademy_project application as a container, docker image should contain all dependencies needed:
+--------------------------------------------------------------------------------------------------------------
+
+Pre-requisite tools for acecloudacademy_project : install java, maven & git in your docker host
+
+[ Note: To install java & maven on ubuntu: 1. apt update -y 2. apt install default-jre -y & 3. apt install maven -y ]
+
+
+
+vi Dockerfile
+
+FROM ubuntu as ub
+WORKDIR /opt
+RUN apt update -y &&  apt install openjdk-11-jdk  -y && apt install maven -y && apt install git -y
+RUN git clone https://github.com/Acecloudacademy/maven-repo.git && cd maven-repo && mvn clean package
+
+FROM tomee:8-jre11
+COPY --from=ub /opt/maven-repo/target/maven-web-application.war /usr/local/tomee/webapps
+EXPOSE 8080
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+can we have multiple CMD instructions in Dockerfile?
+----------------------------------------------------
+Yes, but only the last CMD instructions will be considered as main CMD instruction
+
+
+FROM ubuntu
+CMD date
+CMD whoami
+
+
+

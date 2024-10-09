@@ -1,0 +1,74 @@
+# 1. FROM: Defines the base image for the container
+FROM python:3.9-slim
+
+# 2. LABEL: Adds metadata to the image
+LABEL maintainer="youremail@example.com"
+LABEL version="1.0"
+LABEL description="Sample Dockerfile with all Docker instructions"
+
+# 3. ENV: Sets environment variables
+ENV APP_HOME /usr/src/app
+ENV APP_ENV=production
+
+# 4. WORKDIR: Sets the working directory inside the container
+WORKDIR $APP_HOME
+
+# 5. COPY: Copies files from the host to the container
+COPY . .
+
+# 6. RUN: Runs commands to build the image (e.g., installing dependencies)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# 7. RUN: Another example of RUN to install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 8. ADD: Similar to COPY but also supports remote URLs and archives
+ADD https://example.com/data.zip /data.zip
+
+# 9. EXPOSE: Exposes a port to the host system
+EXPOSE 8080
+
+# 10. CMD: Defines a default command to run when the container starts
+CMD ["python", "app.py"]
+
+# 11. ENTRYPOINT: Sets the main command to run (CMD is passed as arguments)
+ENTRYPOINT ["python"]
+
+# 12. VOLUME: Creates a mount point for external volumes
+VOLUME ["/usr/src/app/data"]
+
+# 13. ARG: Defines build-time variables
+ARG VERSION=1.0.0
+
+# 14. USER: Specifies the user to run the container as
+USER nobody
+
+# 15. HEALTHCHECK: Defines a command to check container health
+HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1
+
+# 16. ONBUILD: Triggered when a child Dockerfile is built
+ONBUILD RUN echo "This runs during child builds"
+
+# 17. SHELL: Specifies the shell used to run commands (for Windows images)
+SHELL ["/bin/bash", "-c"]
+
+Explanation of Dockerfile Instructions:
+
+    FROM: Sets the base image (e.g., python:3.9-slim).
+    LABEL: Adds metadata.
+    ENV: Defines environment variables inside the container.
+    WORKDIR: Changes the working directory to APP_HOME.
+    COPY: Copies files from the host system to the container.
+    RUN: Executes commands at build time (like installing packages).
+    ADD: Similar to COPY but can handle remote files and archives.
+    EXPOSE: Specifies the port to be exposed.
+    CMD: Default command executed when the container starts.
+    ENTRYPOINT: Defines a command that will always run.
+    VOLUME: Defines a volume for persistence.
+    ARG: Allows defining build-time variables.
+    USER: Sets the user the container will run as.
+    HEALTHCHECK: Defines a command to check the health of the service.
+    ONBUILD: Triggered during child image builds.
+    SHELL: Defines which shell is used for commands.

@@ -1,0 +1,363 @@
+Agenda:
+-------
+- daemonsets
+- Volumes
+- ConfigMaps
+- Secrets
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Daemonsets:
+-----------
+- daemonsets are another type of controller k8s object like rc, rs & deployments.
+- daemonsets will run only 1 copy of a pod in each node of cluster.
+- whenever new node gets added to the cluster, a new daemonset pod gets added to that new node automatically.
+
+UseCases:
+--------------
+1.Log Collection: DaemonSets are used to deploy logging agents on every node for comprehensive log collection in Kubernetes.
+
+2.Monitoring: DaemonSets deploy monitoring agents (e.g., Prometheus Node Exporter) on each node to gather metrics for centralized monitoring in Kubernetes.
+
+3.Security Monitoring: DaemonSets are employed for deploying security-related agents (e.g., Falco) on each node to monitor and detect security events in   Kubernetes
+
+
+Note: in any k8s cluster kube-proxy component is running as deamonset only
+
+
+daemonset-manifestfile.yaml
+---------------------------
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-deamonset
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx
+        type: load-balancer
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19
+		
+		
+Observation: in all worker nodes of cluster, 1 pod of deamonset will be running all the time
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Volumes:
+--------
+- containers are ephemeral, ephemeral means containers can start and stop frequently.
+- By default, the Pod does not store created data.
+- In simple terms, volume is nothing but a folder in the worker node. The data created inside the Pod will be transferred to the worker node folder to avoid  data loss using the volume concept when the Pod is deleted or restarted.
+- data means files itself
+- persist means saving / storing 
+
+Kubernetes  volumes:
+--------------------
+In Kubernetes, a volume is like a storage hdd unit that can be attached to a container running inside a pod.
+eg: Just like how we can attach an Pen drive to your computer to store files separately from your computer's main storage
+
+containers are ephemeral by nature, that is when a pod/container gets restarted or stopped or gets killed files / data stored inside containers will also gets deleted, inorder to preserve the data without woorying about container / pod lifecycle we have to use k8s volumes.
+
+Kubernetes volumes allow containers in a pod to store and access data separately from the container's main filesystem.
+
+why do we need to store the data?
+----------------------------------
+Imagine if have a container running a web application server (eg: tomcat)  that generates log files or a database container (eg: mysql) that stores important data. 
+These containers need a way to save and retrieve data even if they stop running or even if the pod gets moved to another node in the Kubernetes cluster. 
+
+what all data we need to keep / store in kubernetes volumes?
+-------------------------------------------------------------- 
+  log files, configuration files, sshkeys , database related files
+  
+advantages of volumes:
+---------------------
+1. data persistence
+2. data sharing: we can share the data(files) with different containers, easy data exchange
+3. High Availability: 
+     By using Kubernetes volumes, your data is no longer tied to a specific container or node. 
+	 Even if a pod fails or is moved to another node, the data in the volume remains accessible, ensuring high availability of your application.
+4. Data Backup and Restore
+
+
+
+Kubernetes Volumes have 3 types majorly:
+----------------------------------------
+
+1. EmptyDir: 
+    - This is like a temporary volume. 
+    - these gets created when the pod starts and is deleted when the pod stops.
+    - It's useful for sharing files between containers, when we are running multiple containers in the same pod.
+      
+	  EMPTYDIR type volumes DEPENDENT ON POD LIFE CYCLE, so this is not recommended type
+	
+2. HostPath: 
+    - using hospath type pods(containers) can store & access files on the worker node's filesystem.
+	- It's like mounting a specific folder from the host machine (or worker node) into the container.
+	  
+	  HostPath type volumes DEPENDENT ON NODE LIFE CYCLE, if a worker node gets deleted data stored in that worker node will be lost permanately.  So this is also not recommended type
+
+3. PersistentVolume (PV): 
+    - Persistent volume is a folder. The folder can be a local or cloud storage folder (AWS cloud - EBS service) which will store the data genereated by containers.
+    - This is a network-attached storage space that can be dynamically provisioned or pre-allocated. 
+	- It's like an external hard drive (external HDD /pendrive like) that's shared across different pods / nodes and can be mounted to any pod that needs it.
+	
+	  PersistentVolumes are not dependent on POD LIFE CYCLE / NODE LIFE CYCLE, so these are CLUSTER WIDE VOLUMES,
+    so these are most recommended type to store the data	
+
+
+
+
+Persistent volume claims (PVC):
+-------------------------
+PVC are like tickets that can grant permission to a pod to use persistent volumes (PV)
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note:
+------
+1. Using k8s playground for free:
+---------------------------------
+  killercoda will give us kubernetes setup , each session which will be valid for 60 minutes.
+  login to https://killercoda.com/playgrounds/scenario/kubernetes using dockerhub credentials
+  & start
+
+2. Note on Creating all k8s manifestfiles using Visualstudio code:
+---------------------------------------------------------------
+  click on extensions in left side bar of Visualstudio & search for kubernetes plugin, install kubernetes plugin.
+   next create a new file & salect language yaml --> type pod --> from suggestion box select --> kubernetes pod suggestion --> pod template file will be ready --> substitute or customize the values according to your use case.
+   simillarly we can generate any k8s object manifest file like this using visual studio code.
+
+
+Note:
+-----
+
+lifecycle --->  infant -- child -- youth -- adult -- older -- die 
+container/pod --> creating -- running -- stopped
+
+
+controller & scheduler will decide where to schedule the pods
+
+master node 
+worker node1
+worker node2  -- if pod gets created here (in hostpath type volume), volume gets created only in this worker node
+worker node3
+
+
+emptydir -->  depends on POD lifecycle used to store data only to available for 1or more containers running in same pod
+hostPath --> depends on node lifecycle
+persistent volumes (google-drive <--> phone) -- doesent depend on pod or node lifecycles also volume will be accesible on all worker nodes 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Config Maps & Secrets:
+----------------------
+ConfigMaps &  secrets are k8s objects, that let us store configuration data outside of a Pod (i.e moving out configuration outside of pod manifest files).
+It also lets you dynamically inject the data into a Pod at run-time (at time of pod creation).
+
+ConfigMaps and Secrets are ways of separating the configuration data from the Pod / Deployment manifests, which makes them more reusable.
+
+
+ConfigMap: 
+----------
+- configmaps are used to store configuration data in key value format.
+- we can use/inject configmaps to pods as environment variables.
+
+  
+how to create configmaps?
+  we can create configMaps in two ways 1. using command line arguments  & 2. using manifestfiles also.
+
+syntax:  
+  kubectl create configmap <configmap_name> --from-literal <key>=<value>
+  
+  kubectl create configmap my-config-1 --from-literal=USERNAME=vijay
+  
+
+Secrets:
+--------
+What is a Kubernetes Secret, and why is it used?
+------------------------------------------------
+A Secret is an object in Kubernetes used to store sensitive information, such as passwords, ssh keys  certificates.
+it's used to separate configuration data from the pods (i.e pod manifest files) and ensure security.
+
+How are Secrets different from ConfigMaps?
+--------------------------------------------
+Secrets are used to store sensitive data, while ConfigMaps are used for non-sensitive configuration data.
+ 
+
+
+Kubernetes secrets are secure objects to store sensitive data such passwords. 
+we can use/inject secrets to pods in two types.
+   1. as environment variables.
+   2. as volumes.
+
+how to create secret?
+  we can create secrets in two ways 1. using commands & 2. using manifestfiles also.
+
+syntax:
+  kubectl create secret generic <secret_name> --from-literal <key>=<value>
+  
+  kubectl create secret generic my-secret-1 --from-literal=PASSWORD=mypasswd@123
+
+
+
+Injecting Config Maps and Secrets in Pods as environmental variables:
+-------------------------------------------------------------------
+
+create a nginx pod using configmaps & secrets created earlier
+  - use configmap my-config-1 to get USERNAME 
+  - use secret my-secret-1  to get PASSWORD 
+
+-------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mycontainer
+    image: nginx
+    env:
+    #k8s will refer configmap named as my-config-1 & fetches value for key in cm which is ==> USERNAME & substitutes its value (bharath) while creating pod  
+    - name: USERNAME
+      valueFrom:
+        configMapKeyRef:
+          name: my-config-1
+          key: USERNAME
+
+    #k8s will refer secret named as my-secret-1 & fetches value for key in secret which is==>password&substitutes its value(mypasswd@123)while creating pod
+    - name: PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: my-secret-1
+          key: PASSWORD
+
+configmap & secrets observations:
+---------------------------------
+
+login in to mypod & print environment variables ==> observe configmap & secrets variable substitution 
+
+kubectl exec -it mypod -- bash
+
+ubuntu@k8smaster:~$ kubectl exec -it mypod -- bash
+root@mypod:/#
+root@mypod:/# echo $USERNAME
+bharath
+root@mypod:/# echo $PASSWORD
+mypasswd@123
+root@mypod:/#
+
+
+How are Secrets different from ConfigMaps?
+- Secrets store sensitive data, while ConfigMaps store non-sensitive configuration data.
+
+What are the best practices for managing Secrets in Kubernetes?
+- Best practices for managing Secrets include limiting access, regularly rotating secrets, and avoiding storing plaintext secrets in version control.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+interview questions:
+--------------------
+- what are volume mounts & its types?
+- why do we need to use volumes in k8s?
+- difference between emptyDir & hostPath volume types?
+- what are secrets & configMaps?
+- what is DaemonSets?
+
+ASSIGNMENT:
+-----------
+- What is the default resources (memory & cpu) used in any pods?
+Ans: By default, Kubernetes does not assign specific resource limits or requests for CPU and memory to a pod unless you explicitly define them. If you don’t specify how much CPU or memory your pod should use, Kubernetes will allow the pod to use as much as it needs, within the capacity of the node.
+
+- what is resource quotas
+Ans: This defines the minimum amount of CPU and memory a pod needs to run.
+
+- create a pod & create 2 blank files using commands & args option in manifest file.
+ Note: check k8s documentation from below link https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+Ans:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: create-files-pod
+spec:
+  containers:
+  - name: file-creator
+    image: busybox   # Using a minimal BusyBox image
+    command: ["/bin/sh", "-c"]
+    args: 
+      - touch /tmp/file1.txt /tmp/file2.txt; 
+        sleep 3600; # Sleep to keep the pod running for an hour
+    volumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp
+  volumes:
+    - name: tmp-volume
+      emptyDir: {}  # A temporary directory to store the files
+  restartPolicy: OnFailure
+
+
+- Assign specific resource cpu & memory usage limit for containers in pod manifestfile
+  https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+Ans:
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: create-files-pod
+spec:
+  containers:
+  - name: file-creator
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args: 
+      - touch /tmp/file1.txt /tmp/file2.txt; 
+        sleep 3600; # Sleep to keep the pod running for an hour
+    volumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp
+    resources:
+      requests:
+        memory: "64Mi"  # Minimum memory the container needs
+        cpu: "250m"     # Minimum CPU (250 milliCPU = 25% of one CPU core)
+      limits:
+        memory: "128Mi" # Maximum memory the container can use
+        cpu: "500m"     # Maximum CPU (500 milliCPU = 50% of one CPU core)
+  volumes:
+    - name: tmp-volume
+      emptyDir: {}  # A temporary directory to store the files
+  restartPolicy: OnFailure
+...
+
+Key Sections for Resource Allocation:
+
+  1.  requests:
+        Memory: The container is guaranteed 64Mi (64 megabytes) of memory.
+        CPU: The container is guaranteed 250m (250 milliCPU, or 25% of one CPU core).
+
+    Requests ensure that Kubernetes reserves these minimum resources for the container.
+
+  2.  limits:
+        Memory: The container is limited to using a maximum of 128Mi (128 megabytes) of memory.
+        CPU: The container is limited to using a maximum of 500m (500 milliCPU, or 50% of one CPU core).
+
+    If the container exceeds these limits, Kubernetes might throttle CPU usage or terminate the pod if memory limits are breached.

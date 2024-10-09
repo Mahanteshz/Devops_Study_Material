@@ -1,0 +1,232 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Multi-stage builds:Name your stages, by adding an AS <NAME> to the FROM instruction
+-----------------------------------------------------------------------------------
+vi Dockerfile
+
+FROM ubuntu as build
+WORKDIR /opt
+RUN apt update -y && apt install default-jre -y && apt install maven -y && apt install git -y
+RUN git clone  https://github.com/Acecloudacademy/maven-repo.git && cd maven-repo && mvn clean package
+
+
+FROM tomee
+COPY --from=build /opt/maven-repo/target/maven-web-application.war /usr/local/tomee/webapps
+EXPOSE 8080
+--------------------------------------------------------------------------------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+####Deploy Python Application####
+============================================
+
+vim app.py
+-----------------
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello, World!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+------------------------------
+
+
+vim requirements.txt
+-------------------
+Flask
+requests==2.26.0
+pytest
+Werkzeug
+--------------------
+
+
+vim Dockerfile 
+-------------------------------------------------------------
+# Stage 1: Build stage
+FROM python:3.9 AS builder
+WORKDIR /app
+RUN rm -rf venv
+RUN python -m venv venv
+COPY requirements.txt .
+RUN venv/bin/python -m pip install --upgrade pip
+RUN venv/bin/python -m pip install -r requirements.txt
+
+
+# Stage 2: Test stage
+FROM builder AS tester
+COPY . .
+RUN venv/bin/python -m unittest discover tests
+
+# Stage 3: Final stage(deploy app)
+FROM python:3.9-slim
+WORKDIR /app
+COPY --from=builder /app/venv /app/venv
+COPY app.py .
+RUN adduser --disabled-password --gecos "" vijay
+USER vijay
+CMD ["/app/venv/bin/python", "app.py"]
+--------------------------------------------------------------------
+
+##Creating image
+docker build -t your-image-name .
+
+##Creating conatiner port 5000 
+docker run --name <conatiner_name>  -d -p 5000:5000 <imagename>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Assignment: Write a Multi Stage Dockerfile for Sample NodeJs Application and deploy to Conatiner
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Docker containers works on process isolation technology.
+process (mentioned in CMD instuction) running in a container will be running as an isolated process, it will not communicate with any other process (or) with any other containers by default.
+
+but in some cases we need to setup communication between the conatiners.
+
+How does containers commuinicate?
+--------------------------------
+containers can communicate with another container ONLY WHEN THEY ARE IN SAME NETWORK.
+if both containers are in same network they can communicate using CONTAINER NAMES or IP ADDRESSES.
+
+
+
+
+Docker Networking:
+-------------------
+
+What is Docker networking?
+--------------------------
+Docker Network is used to setup communication between the docker containers that are running on same (or) different docker hosts
+
+if 1 container wants to communicate with another container we need those conatiners to be in same network.
+
+
+whenever we install docker in a server, by default 3 network gets created.
+
+1. bridge 
+2. host 
+3. none
+
+1. Bridge:
+----------
+   bridge network is default network,
+   if we create a container without specifying any network then containers will get created in bridge network  
+
+   docker run --name c1 -it  busybox
+ 
+   how to know all details about a container?
+   docker inspect <containerName>
+
+2. host:
+--------
+   In host network, containers will not get seperate ip address assigned, but our docker host IP itself becomes containers IP.
+   --network <networkname>
+   
+   docker run --name <containername> --network host <imagename>
+   
+
+3. None:
+---------
+    containers will not have any network assigned.
+	"none" network is useful when you want a container to have no network connectivity, isolating it completely from all networks.
+   
+    docker run --name c2 -it --network none busybox
+
+4. Overlay Network:
+--------------------
+   If you want to establish the connection between the different containers which are present in different docker hosts.
+   Overlay Network is used in Docker swarm 
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+Multi container architecture using docker:
+------------------------------------------
+if multiple conatiners that work for same applications. 
+all applications in software indusries have 3 tiers which are frontend , backend & database.
+which needs to commuincate with each other, these can be achieved using below ways
+1) --link
+2) docker-compose
+
+
+1)  --link option
+----------------------
+SYNTAX: --link <containerName>:<name_for_link>
+
+Use case:
+--------------
+      Start two busybox containers and create link between them
+      
+      Create 1st  container ==> c1
+        # docker run --name c1 -it  busybox
+        / # 
+        come out of the container without exit  ==> ( ctrl + p  + q)
+         
+      
+      Create 2nd busy box container  and establish link to c1 container
+	  syntax: --link <contaier-tobe-linked>:<linkname>
+	  
+        # docker run --name  c2 --link c1:mylink1  -it   busybox   
+        / #
+      
+      
+      How to check  link is established for not?
+      ==>
+      / #  ping c1
+      
+
+How to check link created for any container or not?
+==> Use docker inspect command & look for Link
+
+
+
+
+2)  docker-compose
+
+Docker compose  is a tool, using which we can create multicontainer architecture using yaml files.
+This yaml file contains information about the  containers that we want to launch and how they have to be linked with each other.
+
+.txt ==> text files
+shell scripts format ==> filename.share
+yaml file format ==> filename.yaml / .yml
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+YAML:
+----------
+yaml stands for ==> Yet Another Markup Language
+YAML file extension can be ==> .yaml (or) .yml
+
+
+Yaml is a file format. It is not a scripting language.
+Yaml will store the data in key value pairs
+Lefthand side - Key
+Righthand side - Value
+Yaml file is space indented.
+
+
+note:
+-----
+example of key value pairs
+name: bharath
+<key> <value>
+
+place= bangalore
+<key>= <value>
+
+

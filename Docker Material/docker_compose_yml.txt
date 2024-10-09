@@ -1,0 +1,55 @@
+version: 3
+services:
+  backendApplication:
+   image:2-tier-app
+   ports:
+   - "8080:8080"
+   networks:
+   - 2-tier-network
+   volumes:
+   - /data/my-2-tier-app
+   depends_on:
+   - mysqldb
+   
+   
+  mysqldb:
+   image: mysql:5.7
+   networks:
+   - 2-tier-network
+   environment:
+   - MYSQL_DATABASE=sbms
+   - MYSQL_ROOT_PASSWORD=root
+   volumes:
+   - /data/my-2-tier-app
+networks:
+  2-tier-network:
+
+
+version: '3'
+services:
+  backendApplication:
+    image: my-2-tier-project:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - 2-tier-network
+    volumes:
+      - /data/my-2-tier-app:/data
+    depends_on:
+      - mysqldb
+   
+  mysqldb:
+    image: mysql:5.7
+    networks:
+      - 2-tier-network
+    environment:
+      - MYSQL_DATABASE=sbms
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  2-tier-network:
+
+volumes:
+  mysql-data:

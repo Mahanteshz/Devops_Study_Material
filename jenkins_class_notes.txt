@@ -1,0 +1,1335 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                   what are artifacts?
+-------------------
+We cannot directly use any code written in any programming languages, so we have to convert those into machine understable format called as artifacts.
+
+
+ex: git (gitbash software for windows) is written(developed) using c/c++ language
+	jenkins software is written(developed) using java language
+    docker software  is written(developed) using golang language
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Note:
+----
+1. what are other programming languages used ?
+   Java, python, node js .
+
+2. what all build tools available for java?
+  Java supports both Maven (or) Gradle   
+
+3. For Nodejs build tool is npm & artifacts name will be like package.json    
+
+we will work on java based applications with Maven as build tool
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+CI- CD PROCESS:
+---------------
+<< DIAGRAM >>
+
+CODE:
+-----
+Here developers need to write code to develop web applications. 
+once developers done with writing code, code it will be committed using VCS like GIT 
+& code gets pushed to centralized/Remote repos like GitHUb.
+
+BUILD:
+-------
+ Let’s consider your code is written in java, it needs to be build before usage.
+ In this build step code gets compiled artifacts (jar or war file) get generated 
+ For build purpose we will use maven
+
+UNIT TEST:
+----------
+ If the build step is completed, then move to testing phase in this step unit test will be done.
+ - unit test are simpler CODE LEVEL TESTING to test correctness of individual units of code.
+ - unit testing will be done by developers.
+ - Junit tool can be used for unit testing.
+ - if unit test is passed then we can push build artifacts to artifactory
+ - if unit test is failed then developers will get feedback & then they will fix the code & again cycle begins from start.
+
+
+ARTIFACTORY:
+-----------
+
+- Artifactory is place where we can store our build artifacts (like github for storing code), so that in future we may use/share again.
+- JFROG / NEXUS are most used artifactory tools in industry
+
+
+
+DEPLOY:
+-------
+- In this step, you can deploy(install) our application(war file). 
+- Here, you can see your application output
+- optionally, we can deploy our application to different environments & do different types of testing.
+
+Note:
+environments means group of servers(will be discussed later).
+
+AUTOMATED TESTING:
+-----------------
+- after deploying, we will do complete testing of application using Automatedtesting tools.
+- Testing team (or QA Team) will use tools like selenium  to test
+- Testing will be done using scripts given by testing team .
+- overall it is APPLICATION LEVEL TESTING
+
+
+if automated test results are good, then  we can deploy in PRODUCTION ENVIRONMENT 
+
+DEPLOY TO PRODUCTION ((LIVE ENVIRONMENT)):
+---------------------
+ If all results in AutoMated Testing are ok, then we can deploy your code in production servers. (by taking all approvals)
+ 
+MONITOR:
+--------
+  After deploying to prod we have to monitor(observe) the applications performance so that end users dont face any issue while accesing applications.
+
+Note:
+-----
+Deploy to production will not be done automatically. 
+  
+
+Earlier above mentioned stages was done seperately, now with tools like jenkins we can automate or execute all stages AUTOMATICALLY. 
+
+Because of Jenkins, If we have any error / malfunction is found in our code, it will be reported fast to developers and get rectified so entire development is fast.
+
+Here, Overall SDLC will be automatic using Jenkins
+
+
+
+
+what is jenkins?
+---------------
+- Jenkins is a open source CI -CD tool written in java. 
+- The leading open source auttomation tool will do all points mentioned in the diagram
+- Jenkins provides hundreds of plugins to support building, deploying and automating any project.
+- If we want to use continuous integration first choice is jenkins.
+- It consists of plugins. Through plugins we can do whatever we want, without plugins we can’t run anything in jenkins
+- It is used to detect the faults in the software development.
+- It automates the code whenever developer commits
+- It was originally developed by SUN Microsystem in 2004 as HUDSON
+- HUDSON was an enterprise edition( i,e it was not open source project earlier),  it was paid tool.
+- The project was renamed jenkins when oracle brought the microsystems.
+- Jenkins default port number is 8080
+
+
+What is CI-CD?
+--------------
+- Whenever developers write code pushes code to VCS (Github/gitlab/bitbucket), we integrate all the code of all developers at any point of time and we build, test and deliver/deploy it to the client.
+ This process is called CI/CD
+
+advantages of CI-CD:
+--------------------
+ With CI-CD, If we have any issue in our code, it will be reported fast to developers, so that they can rectify the issues, so entire SDLC lifecycle will be very fast.
+
+
+
+Why only Jenkins?
+================
+- It has so many plug-ins. You can write your own plug-in.
+- We can attach slave servers to Jenkins master.
+- It instructs others (slaves) to do Job. If slaves are not available, Jenkins itself does the job.
+- Jenkins also works like crontab, i.e it can schedules scripts to run at any time as we need.
+
+
+
+Key Terminologies in CI - CD :
+==============================
+
+- Integrate: Combine all code written by developers till some point of time
+
+- Build: Take the source code and generate artifacts (war files)
+
+- Test: Run test scripts given by testing teams to check whether application is working properly or not.
+
+- Artifactory: artifactory is a place where we keep our build artifacts (war file), so that in future we may use/deliver again.
+    
+	Jfrog / nexus are most used artifactory tools in industry
+
+- Deliver : Handingover the product (aritifact i. e war file ) to Client.
+
+- Deploy: Installing product (aritifact i.e war file ) in client’s servers.
+
+===================================================================================
+
+
+
+
+Features of jenkins:
+--------------------
+
+- Whenever developers write code & pushes it to SCM, we integrate all that code of all developers at that point of time and we build, test and deliver/deploy to the client. This process is called CI & CD.
+- Jenkins helps in achieving this CI / CD process.
+- So in a day, there will be so many code change commits, pushes , builds, tests & deliveries/deployments.
+- So bugs will be reported fast and get rectified fast. So development happens fast.
+
+
+Other CI tools available in market:
+----------------------------------
+ GitLab, Circle CI , GitHub actions , Bamboo
+
+Jenkins workflow :
+------------------
+- We attach Git, Maven, Selenium & Artifactory plugin's to Jenkins.
+
+- as soon as Developers push code to GitHub, Jenkins pull that code instantly & sends that to Maven for build & maven will generate artifacts.
+
+- Once build is done artifacts are generated, Jenkins pull that built artifacts and send to Junit/selenium for testing
+
+- Once testing is done, then Jenkins will pull that build artifacts and send to artifactory to store artifacts.
+
+- then as per clients requirement, We can either handover artiafacts to client ====>> continiuos delivery
+                                                  (or) 
+- we will deploy those artifacts on client servers using Jenkins ====>> continiuos deployment
+
+
+
+Benefits of Continuous Integration:
+-----------------------------------
+- Since bugs will be reported fast and get rectified fast. So development happens fast.
+- Maintains history (Logs) for reference
+
+
+Jenkins Jobs:
+-------------
+sequence of tasks that userdefines is called as job in jenkins
+
+What is Build in Jenkins:
+-------------------------
+running the job is called as build in jenkins
+
+
+Three types of jobs are created in jenkins:
+-----------------------------------------
+1. Freestyle job
+2. Maven Project
+3. Pipeline job
+
+1. Freestyle job:
+   - free style jobs are general type build jobs. using which we can execute linux command, run shell scripts
+   - used for mild customizations, such as we can combine any vcs with any build tools.
+
+2. Maven Project
+   - maven project are jobs which will run maven goals against pom.xml & generates artifacts (war/jar files).
+  
+3. Pipeline Jobs:
+   - pipeline jobs will run entire SDLC (software developement life cycle) as a code.
+  
+
+-----------------------------------------------------------------------------------------------------------------------
+Importnant note:
+----------------
+- Jenkins Homepage is also known as jenkins dashboard
+- In Jenkins, J0B == PROJECT == ITEM == ALL ARE SAME
+- In Jenkins, running a J0B is called as BUILD
+   while running job if job succeded ==> build is success
+                     if job failed ==> build is failed
+					 
+- Jenkins default home directory path ==> /var/lib/jenkins					
+- jenkins default port number is 8080
+------------------------------------------------------------------------------------------------------------------------
+
+**************Important Interview question*****************
+
+How to create a freestyle project step by step?
+==================================================
+- jenkinsdashboard --> create new item --> give_any_name & select Freestyleproject --> click OK --> confuration page will gets openend
+   Options in configure page:
+     1. general tab --> give descirption about your job/project
+	 
+     2. Source Code Management 
+	    in this section, we can select git option as we can use git a VCS, we can provide github repo url , branch name & credentials,
+		it will checkout source code from github to jenkins workspace.
+		
+     3. Build triggers
+	    in this section, we can trigger the job based on time / commit / once other jobs are built	        
+	    i. Build periodically ==> 
+		       it will trigger the job based on time, we can schedule jobs like crontab. 
+        ii.poll scm ==>
+		       it will trigger the job based on commit.
+		       jenkins will look after SCM periodically, if there are any new commits within specified time then it will trigger the job
+	    iii.Build after other projects are built ==>  
+		       we can trigger build only after other project/job is built.
+	 
+     4. Build step:
+	     it is the major step in freestyle project
+	     if we select execute shell ==> we can run any shell scripts & build related commands.
+	
+    5. Post-build Actions:
+	    these will get executed after build steps execution.
+		here we can  - run test cases
+                 	 - we can do deployments
+               		 - email build results.
+					 
+--------------------------------------------------------------------------------------------------------------------------------------------------				 
+
+Create a sample job / Project / item
+-------------------------------------------------
+
+create new item
+
+give a name for your job
+
+select freestyle project & create
+
+your build configuratin page will open
+
+now go to build tab & select execute shell from dropdown menu
+
+In Command Box Enter echo " Hello Jenkins"
+
+Click on apply & save
+
+come to jenkins dashboard & click on build now
+
+Click on Console Output & observe logs
+
+--------------------------------------------------------------------
+Example:1
+*********
+echo " hi this my first Jenkins job"
+
+cd /var/lib/jenkins/
+touch file_sample1
+
+
+
+Example:2
+*********
+echo " hi this my first Jenkins job"
+
+touch file_sample2
+
+Note:
+*****
+  If you haven't specific path to create file, it will create file_sample2 file in Jenkins local under job directory workspace/<job/project/>/
+  
+  Ex:
+  /var/lib/jenkins/workspace/Sample-Project1
+
+
+Example:3
+*********
+Add script in Remote repo and configure url in SCM session.
+
+Make sure that Git is installed in Jenkins server, If not it will throw error while configuring git url.
+
+Once you configured Git url then execute script by using sh <script-name>
+
+Build step==>Execute shell==>sh script.sh
+
+
+====================
+Assignments:
+------------
+Jenkins:
+********
+list the Folder structure of Jenkins?
+Ex:
+workspace==?
+jobs==?
+plugins==?
+log===?
+nodes==?
+config.xml==?
+
+---------
+Maven:
+*****
+1.what is Settings.xml file in maven ?
+In Maven, the settings.xml file is an essential configuration file that allows you to customize various settings 
+for your Maven build environment. This file is typically located in the conf directory of your Maven installation, 
+under the Maven_Home directory. Additionally, you can also have a user-specific settings.xml file in the .m2 directory in your user's home directory, 
+allowing for individual user configuration.
+
+2.What is Pom.xml file in maven?
+In Maven, the pom.xml file is a Project Object Model (POM) file, and it is a fundamental part of a Maven project. The pom.xml file contains 
+configuration information for Maven to build the project, manage dependencies, and execute various tasks during the build lifecycle. 
+The POM file is typically located in the root directory of the project.
+
+Crontab
+*********
+MINUTE HOUR DOM MONTH DOW
+*/2      *   *    *    *    ---Run for every 2min
+*/5      *   *    *    *    ---Run for every 5min
+0        9   *    *   1-5
+
+
+Jenkins home directory:
+========================
+The is the default Jenkins home directory in Linux -->  /var/lib/jenkins 
+
+Jenkins home directory contains the below sub directories and configuration files (.xml).
+
+- jobs
+  -- <JOBNAME> — :Sub directory for each job
+- workspace: this is the place where all source code will be checked out & build output will be stored
+- logs : it contains jenkins logs
+- nodes : it will have server info
+- plugins : This directory contains all the plugins that you have installed.
+- updates : This is an internal directory used by Jenkins to store information
+
+- users : it contains all users informations.
+
+
+How to install plugins in Jenkins?
+========================
+jenkinsdashboard --> manage jenkins --> manage plugins --> available tab --> <search for plugin> --> select plugin
+select install without restart
+
+plugin : maven intigration
+-------------------------------------------------------------------------------------------------------------------------
+
+
+Tools (Older version of Jenkins its Global tool configuration):
+========================
+if we install any software in our jenkins server, we need to configure this in jenkins under Global tool configuration/tools, so that jenkins can start using that,
+
+Jenkins dashboard --> manage Jenkins -->tools configuration
+
+
+Note on configuring maven for jenkins:
+--------------------------------------
+Note: No need to install Java again in Jenkins server, Since Java is already installed in jenkins server.
+
+Make sure you installed Maven on your Jenkins server & also echo $M2_HOME ==> copy output path
+go to Jenkins dashboard --> manage Jenkins --> tool configurations --> maven --> expand --> name: <give_any_name> & path  paste ( output of echo $M2_HOME i.e /opt/apache-maven-3.8.8)
+
+
+Jdk configuration
+*****************
+
+Install Amazon Corretto JDK
+If Amazon Corretto JDK is not installed or installed incorrectly, follow these steps to install it:
+
+Install Amazon Corretto JDK:
+****************************
+sudo yum install -y java-17-amazon-corretto-devel
+Verify Installation:
+
+java -version
+
+Add Amazon Corretto Repository:
+*******************************
+sudo rpm --import https://yum.corretto.aws/corretto.key
+sudo curl -Lo /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+
+
+
+Restart the jenkins server
+**************************
+sudo systemctl restart jenkins
+
+Set the path/Environmental Variable for Jdk in /etc/profile file
+
+vi /etc/profile
+
+export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
+export PATH=$JAVA_HOME/bin:$PATH
+
+
+source updated file to apply env variables values 
+source /etc/profile
+
+-------------------------------------------------------------------------------------------------------------------------
+
+
+How to create a maven project?
+------------------------------
+- make sure you have installed maven integration plugin is installed.
+  jenkinsdashboard --> create new item --> give_any_name & select maven-project --> click OK
+  maven-project confutation page will gets opened
+   in general tab --> add description about your job
+   in Source Code Management tab --> paste your GitHub repo url 
+   in build tab --> Goals and options --> clean package 
+  save & run & check console output for logs
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Upstream & downstream jobs:
+===========================
+we have 2 JOBS job1 & job2, if Job 2 is dependent on Job 1, when I trigger Job 1 ==> once job 1 completes it should trigger job2 automatically
+here we can say JOB1 --> Upstream job  & Job2 --> Downstream job
+
+in job1 configuration page ==> post-build actions ==> build other projects ==> Job2
+
+now trigger job 1 & check for job2 to get triggered automatically after job1 is completed.
+
+----------------------------------------------------------------------------------------------------------------------
+
+Change name or hostname of any server?
+-------------------------------------------
+   syntax: sudo hostnamectl set-hostname <your_desired_name>
+   
+   after executing above command logout from server & login to apply the name changes 
+   
+    eg: to change / set my server name as jenkins_server
+   
+   
+   [ec2-user@ip-172-31-27-98 ~]$ sudo hostnamectl set-hostname jenkins_server
+   [ec2-user@ip-172-31-27-98 ~]$ logout
+   Connection to ec2-54-89-69-64.compute-1.amazonaws.com closed.
+ 
+    $ ssh -i "NewKeypair_V2.pem" ec2-user@ec2-54-89-69-64.compute-1.amazonaws.com
+    Last login: Thu Dec  8 05:13:36 2022 from 122.171.21.90
+    
+           __|  __|_  )
+           _|  (     /   Amazon Linux 2 AMI
+          ___|\___|___|
+    
+    https://aws.amazon.com/amazon-linux-2/
+    31 package(s) needed for security, out of 45 available
+    Run "sudo yum update" to apply all updates.
+    [ec2-user@jenkins_server ~]$
+	[ec2-user@jenkins_server ~]$
+	[ec2-user@jenkins_server ~]$
+	[ec2-user@jenkins_server ~]$
+
+----------------------------------------------------------- 
+Assignment1:
+-----------
+create 3 freestyle jobs as 1.build 2.test & 3.deploy in same order as Upstream & downstream jobs , just run echo statements in build section
+
+
+
+Assignment2:
+------------
+
+1. Run disk_utilization script as freestyle job with
+
+  - job needs to be triggered every 5 minutes using build triggers.
+
+
+2. Build the below source codes as maven projects
+
+-- https://github.com/jitpack/maven-simple
+
+-- https://github.com/jenkins-docs/simple-java-maven-app.git
+
+-- https://github.com/javaparser/javaparser-maven-sample
+
+
+
+
+
+
+webhook in github:
+------------------
+why webhook?
+- in build triggers such as buildPeriodically & pollSCM , jenkins need to look for SCM for commits based on timeperiod.
+  but with webhooks, if there's any small change is done for source code placed in github, Github-webhook will trigger the build automatically in jenkins.
+
+How to setup web-hooks?
+------------------------
+
+- step1) settings needs to done in github side:
+  create a repo --> settings --> webhooks --> create webhook(add Webhook)
+  Note: here for payload url means your jenkins ip address with portnumber also attach /github-webhook/ at the end of payload url
+       example: =  => Payloadurl: http://107.21.88.10:8080/github-webhook/
+  content type: application/json
+  ==> add webhook
+  
+- step1) settings in jenkins side
+  in configuration page of any job 
+   ==> git & add github repo url
+   ==> in buildtrigger section section ==> select==> GitHub hook trigger for GITScm polling
+   ==> give any commands in build section
+
+make any changes to code / Readme.MD file & commit ==> jenkins will automatically run this build without any manual intervention in jenkins side
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+master ==> owner who instructs
+Slave ==> someone who works on instructions provided by master
+ 
+
+Master & slave in jenkins
+------------------------------------
+master ==> jenkins master is server where we have installed jenkins.
+slave/worker ==> slave / agent is a server which will be connected to jenkins master, which follow instructions given by jenkins master &  jobs will get executed in slave / agent server.
+
+
+Why do we need to use master/slave setup ?
+------------------------------------------
+-  To reduce workloads on master server & distribute it to different servers.
+-  if we want to run specific job on specific server
+   eg: if we want to build maven project, we can use slave server which has maven installed in it
+
+
+Important  NOTE:
+---------------------------
+Dual meanings:
+    nodes == agent == slaves == workers ==> all are same terminolgies
+
+
+
+==============Jenkins-Slave- Setup Practicals====================
+
+Step1): Launch Slave ec2-server (use t2-medium) and install java
+           
+		yum install java-11
+		
+		or
+		
+		sudo dnf install java-17-amazon-corretto -y
+
+
+Step2) :(in slave) Create a Jenkins user, set password, create jenkins path and x
+
+        useradd jenkins
+        
+        passwd jenkins
+        
+        mkdir /var/lib/jenkins
+        
+        chown  -R jenkins:jenkins   /var/lib/jenkins
+        
+        vim /etc/ssh/sshd_config
+        
+        PasswordAuthentication no to yes
+        
+        service  sshd restart
+
+
+#### Configurations needs to be done in JENKINS GUI #### 
+
+Step3):  Add the jenkins user name and password in jenkins Credentials section
+
+how to add credentials in jenkins?
+   Manage Jenkins==> Credentials ==> global ==> Add credentials
+   It will open credentials configuration page:
+         Kind==>username with password
+         Scope==>Global Username==> jenkins user name (created in slave server in step2)
+         Password==> password of Jenkins user (created in slave server in step2)
+
+
+Step4):   Add Node/Slave server in Jenkins Master  
+ 
+***********important_interview_question************
+
+How do you add slave in jenkins / steps involved in adding slave to jenkins ?
+-------------------------------------------------------------------------------
+
+Manage Jenkins==> Manage Nodes and Clouds==>New Node ==> provide Node name and select Permanent Agent and then click on create
+
+It will  open node configuration page
+
+             Name ==>Slave server name (can be any)
+             
+             Number of executors ==>The number of parallel jobs, which we can runs at a time
+             
+             Remote root directory ==>  directory path on slave server, where jobs gets executed
+             
+             Labels ==>give any name,
+			 ## labels will be used to control where we can run job  (it can be on master/slave) 
+             
+             Launch method ==> Launch agents via SSH Method
+             
+             Host ==> <private IP> of Slave server
+             
+             Credentials==> select the Jenkins credentials  created to access slave server
+             
+             Host Key Verification Strategy ==> Manually trusted key verification  startegy
+
+click on Save.
+
+
+
+How to Run job in slave?
+---------------------------------
+in configuration page of any jenkins job & under general section
+   select ==> Restrict where this project can be run  ==> labelname  ( give labelname of slave added)
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                     Pipeline job
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note on Pipeline:
+----------------
+eg: 
+      SDLC flow ==>   sourcecode ==> build     ==>  unittest     ==>  deploy ==> automatedtest
+                         stage1  ==> stage2    ==>  stage3       ==>  stage4 ==>  stage5
+  
+Jenkins Pipeline:
+-----------------
+- pipeline is another type of jenkins job, which contains series of stages executed in sequence to create CI-CD flow.
+- Pipeline jobs are more flexible than freestyle jobs
+
+Pipeline job/Project:
+---------------------
+• Another way of creating job, here configurartion will be done with help of code called as pipline scripts.
+• Pipeline scripts are written in groovy DSL language.
+
+
+Advantages of pipeline Job:
+---------------------------
+• we can divide the job into many parts called as stages (eg: build stage /test stage /deploy stage/..) & each stage can run in different agents (slave).
+• we can run stages in parallell.
+• we can retrigger job from failed stage.
+• visualize the build flow.
+• Build can wait for user input(specific user can enter).
+
+
+Types of Pipeline jobs / projects :
+-----------------------------------
+in pipeline project, we can write piplinescript /groovy code in two types
+  
+  1. Declarative: 
+  2. Scripted:
+
+
+Declarative pipline scripts:
+----------------------------
+- simple & felxible than scripted pipline.
+- pipleine script file is also called by the name Jenkinsfile
+- we can put this jenkinsfile into VCS, to track changes
+- we can generate scripts from jenkins UI using pipeline syntax option.
+
+
+Keywords in Declarative pipeline scripts:
+-----------------------------------------
+
+- Pipeline directive:
+  -------------------
+  • pipleine keyword indicates that script is declarative script.
+   
+      pipeline {
+      }
+   
+- Agent directive:
+  ----------------
+  • agent directive indicates in which server we want to run our entire pipeline script 
+    (agent could be jenkins master/slave/ docker containers..)
+
+    agent any ==> indicates this job can be run anywhere ( i.e on master or any slave)
+
+- Stages directive:
+  -----------------
+  • contains sequence of stage's , atleast one stage has to be there under stages.
+  • stages just says "below are my stages"
+
+- Stage directive:
+  ----------------
+  • we need to write stage inside stages directive.
+  • we need to give name for stage of our job (build stage/test stage/deploy stage/...etc) 
+  • stage name given will be display on the jenkins pipeline dashboard
+
+   stage('<stage_name>'){
+   }
+
+- Steps:
+  ------
+  • We need to write steps inside the stage directive.
+  • all commands /scripts used to build the pipelinejob has to defined here.
+
+   steps{
+     echo "running this job....."
+   }
+   
+
+
+------------------------------------------------------------------------------------------------------------------
+
+What is the difference between Declarative and scripted pipeline ?
+-----------------------------------------------------------------
+Both  Declarative and scripted pipeline are written in groovy DSL, they majorly differ only in syntax and flexibility.
+
+________________________________________________________________________________________________________
+   scripted pipeline                                   |     Declarative pipeline                       |
+_______________________________________________________|________________________________________________|
+-  First & Old feature                                    - Latest & advanced feature
+-  complex groovy syntax                                  - simpler & easily understandble groovy syntax
+-  dosenot support restarting job from failed stage       - supports restarting job from failed stage
+-  More flexible & powerful                               - less flexible
+-  code is defined inside "node" block                    - code is defined inside "Pipeline" block
+-  doesnot support blue ocean plugin                      - supports blue ocean plugin
+-  syntax:                                                - syntax:											   
+
+    node {                                                   pipeline{
+    stage('Build') {                                            agent any
+        <build_commands>                                        stages {
+      }                                                           stage('<stage_name>)'{   
+    }                                                               steps{
+                                                                      <commands>
+                                                                 }													 
+                                                                }
+                                                              }
+                                                             } 
+
+____________________________________________________________________________________________
+
+
+Sample declarative pipeline scripts:
+====================================
+
+ex1: write a pipeline script with 1 stage called first_stage  & print any statement using echo
+----------------------------------------------------------------------------------------------
+
+pipeline{
+    agent any
+    stages{
+      stage('first_stage'){
+        steps{
+            echo "running my first pipeline script....."
+        }
+      }
+    }
+}
+
+ex2: write a pipeline script with 3 stages build , test & deploy & run echo commands in all 3 stages.
+-----------------------------------------------------------------------------------------------------
+
+pipeline{
+    agent any
+    stages{
+        stage('build'){
+            steps{
+               echo "running build stage........." 
+            }
+        }
+        stage('test'){
+            steps{
+                echo "runnning test stage......."
+            }
+        }
+        stage('deploy'){
+            steps{
+                echo "running deploy which is final stage....."
+            }
+        }
+        
+    }
+}
+
+ex3: write a pipeline script with 1 stage & clone a git repo ( eleven devops maven repo).
+-------------------------------------------------------------------------------------------------
+
+pipeline{
+    agent any
+    stages{
+        stage('clone_repo'){
+            steps{
+                git branch: 'main', url: 'https://github.com/jitpack/maven-simple'
+            }
+        }
+    }
+}
+
+pipeline{
+    agent any
+    stages{
+        stage('clone_repo'){
+            steps{
+                git 'https://github.com/jitpack/maven-simple'
+            }
+        }
+    }
+}
+
+
+ Note: 
+ -----
+ How to generate groovy commands syntax from jenkins GUI?
+ go to configure section of any pipeline job created ===> scroll down to pipeline section --> pipeline syntax( it will open new tab) --> steps --> sample step --> select from drop down ==> git: Git ==> give git repository url & branch --> generate pipeline script ==> copy the output generated & add that in steps section <as shown in above script>
+
+=========================================================================
+To run a pipeline script on different Jenkins slave machines
+
+pipeline {
+    agent none
+    stages {
+        stage('Build on Node 1') {
+            agent {
+                label 'node1'                       
+            }
+            steps {
+                // Build steps
+            }
+        }
+        stage('Test on Node 2') {
+            agent {
+                label 'node2'
+            }
+            steps {
+                // Test steps
+            }
+        }
+    }
+}
+
+
+To rerun only the failed stage of a Jenkins pipeline job
+********************************************************
+pipeline{
+    agent any
+    stages{
+        stage('build'){
+            steps{
+               echo "running build stage........." 
+            }
+        }
+        stage('test'){
+		    when {
+                expression { currentBuild.result == 'FAILURE' }
+            }
+            steps{
+                echo "runnning test stage......."
+            }
+        }
+        stage('deploy'){
+            steps{
+                echo "running deploy which is final stage....."
+            }
+        }
+        
+    }
+}
+
+
+Assignments:
+------------
+1.Create a slave & run any maven project in slave
+
+2.Clone the below source codes as pipeline jobs / projects:
+---------------------------------------------------------
+
+-- https://github.com/jitpack/maven-simple
+
+-- https://github.com/jenkins-docs/simple-java-maven-app.git
+
+-- https://github.com/javaparser/javaparser-maven-sample
+
+===================================================What are Environment Variables in Jenkins?
+------------------------------------------
+Environment variables are global key-value pairs, Jenkins can access and inject into a project. Use Jenkins environment variables to avoid having to code the same values for each project.
+
+Other benefits of using Jenkins environment variables include improved security. Jenkins can use security credentials as variables, keeping sensitive or user-generated data out of the project code.
+
+To see a list of Jenkins environmental variables in a web browser, navigate to the following address:
+http://52.91.15.184:8080/env-vars.html/
+
+
+Jenkins environmental variables
+*******************************
+pipeline {
+    agent any
+    stages {
+        stage("Env Variables") {
+            steps {
+                echo "The current build number is ${env.BUILD_NUMBER}"
+                echo "Another method is to use \${BUILD_NUMBER}, which is ${BUILD_NUMBER}"
+            }
+        }
+    }
+}
+
+
+
+pipeline {
+    agent any
+    stages {
+        stage("Env Variables") {
+            steps {
+                echo "Home path of Jenkins is ${env.JENKINS_HOME}"
+                echo "Default home path is \${JENKINS_HOME}, which is ${JENKINS_HOME}"
+            }
+        }
+    }
+}
+
+
+
+Injecting Global Variables:
+*****************************
+Using Global Environment Variables:
+
+Navigate to Jenkins Dashboard > Manage Jenkins > System.
+Scroll down to the "Global properties" section.
+Check "Environment variables" and define your global variables in the format KEY=Value.
+Save the configuration.
+Accessing Global Variables in Pipeline:
+
+Global variables defined in Jenkins configurations are automatically available in pipeline scripts using the env object.
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('env Stage') {
+            steps {
+                script {
+                    def globalVariable = env.GLOBAL_VARIABLE_NAME
+                    echo "Value of GLOBAL_VARIABLE_NAME: ${globalVariable}"
+                }
+            }
+        }
+    }
+}
+
+
+key -->Sportsman
+value-->virat
+
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('env Stage') {
+            steps {
+                script {
+                    def globalVariable = env.Sportsman
+                    echo "Value of Sportsman: ${globalVariable}"
+                }
+            }
+        }
+    }
+}
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('env Stage') {
+            steps {
+                script {
+                    def globalVariable = env.Actor
+                    echo "Value of Actor: ${globalVariable}"
+                }
+            }
+        }
+    }
+}
+
+Injecting Local Variables:
+*************************
+Using Local Environment Variables:
+You can define local variables within the pipeline script using environment blocks.
+Use the environment directive to define local variables in each stage or at the top level of the pipeline.
+
+Ex:1
+pipeline {
+    agent any
+    
+    environment {
+        LOCAL_VARIABLE_NAME = 'local_value'
+    }
+    
+    stages {
+        stage('Example Stage') {
+            steps {
+                script {
+                    echo "Value of LOCAL_VARIABLE_NAME: ${LOCAL_VARIABLE_NAME}"
+                }
+            }
+        }
+    }
+}
+
+Ex:2
+*****
+pipeline {
+    agent any
+    
+    environment {
+        MY_USER = 'DevOps_admin'
+    }
+    
+    stages {
+        stage('Example Stage') {
+            steps {
+                script {
+                    echo "Value of MY_USER: ${MY_USER}"
+                }
+            }
+        }
+    }
+}
+
+Ex3:
+
+pipeline {
+    agent any
+    environment {
+        DATE = "Feb 12th"
+    }
+    stages {
+        stage("Env Variables") {
+            environment {
+                NAME = "Ravi"
+            }
+            steps {
+                echo "Today is ${env.DATE}"
+                echo "My name ${env.NAME}"
+                script {
+                    env.WEBSITE = "acecloudacademy"
+                }
+                echo "This is an example for ${env.WEBSITE}"
+                
+            }
+        }
+    }
+}
+
+In this example, we are setting the DATE and NAME environment variables declaratively. DATE is at the top of the pipeline and can be used in every stage, while NAME is in the "Env Variables" stage, so we can only use it within that stage. The WEBSITE variable is set imperatively. 
+
+================================================================
+
+Tomcat:
+------------
+
+Note:
+-----
+- SourceCode ==> build sourcecode ==> generate artifacts <JAR/WAR/EAR>  files ==>  deploy artifacts ==> jar/war files 
+
+- Deploy ==> installing some package/artifacts
+
+- artifacts types in java 
+     JAR ==> java archives==> contains only java files
+     WAR ==> contains ==>java code + html files + images
+
+- websites are generally called as webapplications.
+
+- webapplication are generally built by deploying(installing) artifacts such as war files
+
+- How to deploy/run jar file ?
+  ==>by using java command we can deploy jar files
+     syntax  -->  java -jar <jarfilename>
+
+- How to deploy war files ?
+  ==>  to deploy war files we have to use tools called as WebApplicationServers.
+
+- WebApplicationServers ==> tools which are available in market ==> Tomcat / Jboss / weblogic 
+
+=====================================================================================================
+                                        *****Tomcat*****
+=====================================================================================================
+Pre-req ---> Java-->Tomcat-->Maven-->Git 
+
+
+Tomcat
+-----------
+is an opensource, java based  web application server tool used to deploy artifacts 
+default port of tomcat is 8080
+java is pre-requisite for tomcat
+
+====Tomcat Installation & setup=====
+
+launch a new ec2 instance (Note: update ec2 instance security group inbound rules to all atraffic & anywhere)
+
+
+Step1): Install Java on ec2 instance
+         yum install java-11
+
+Step2) :  Download tomcat from https://tomcat.apache.org/ site
+      i.  download tomcat application package & extract zip file
+           sudo su -
+           cd /opt/
+           		   
+		   wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.91/bin/apache-tomcat-9.0.91.tar.gz
+		   
+		  
+           tar -xvf apache-tomcat-9.0.91.tar.gz
+		   
+      ii. rename apache-directory for simple understanding
+          mv apache-tomcat-9.0.91 tomcat9
+      
+      iii. set CATALINA_HOME environment variable
+             Before starting the Tomcat Service, configure a CATALINA_HOME environment variable in your system using the following commands.
+			 
+             echo "export CATALINA_HOME="/opt/tomcat9"" >> ~/.bashrc
+             source ~/.bashrc
+      
+       iv. start the tomcat web application server using the scripts provided in tomcat  bin directory .
+           cd /opt/tomcat9/bin 
+           ./startup.sh 
+
+Step3): Acess Tomcat from browser:
+      Open tomcat GUI http://<PubliCip>:8080
+      click on manager app 
+	  [ you will get access denied to resolve this &  enable remote access to the Manager app ]
+      go to below xml file & at last part of the file comment these lines as shown below
+      
+      vi /opt/tomcat9/webapps/manager/META-INF/context.xml
+      
+      ##Comment the below three lines .(in xml files comment is done with starts with <!-- and ends with --> )
+      
+      <!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+                allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1 | 192.168.0.*"/> -->
+
+
+Step4):  By default Tomcat doesent add any users ,we need to configure/add users.
+         to add users to tomcat ==> tomcat-users.xml   
+		 file located under /opt/tomcat9/conf directory and add  just below (<tomcat-users> section.
+ 
+vi /opt/tomcat9/conf/tomcat-users.xml 
+     
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>   
+<user username="admin" password="admin" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+<user username="deployer" password="deployer" roles="manager-script"/>
+<user username="tomcat" password="s3cret" roles="manager-gui"/>
+
+
+Note: Stop and start the tomcat server
+**************************************
+cd /opt/tomcat9/bin 
+./shutdown.sh
+./startup.sh 
+
+
+Step5: Access Apache Tomcat Web Interface :
+------------------------------------------
+
+http://<public_IP>:8080/
+
+Click on managerapp ==> you see login page ==> username ==> admin & password ==> admin 
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Important files & Directory structure in tomcat : 
+-------------------------------------------------
+The typical directory hierarchy of a Tomcat installation consists of the following:
+
+bin :
+    bin directoryt contains startup, shutdown and other scripts  
+     startup.sh --> script to start tomcat
+	 shutdown.sh --> script to stop tomcat
+	 
+conf:
+    Conf directory contains All configuration files of tomcat.
+	eg:
+    -- server.xml ==> file ==> where we can configure tomcat to change port number etc.
+	-- tomcat-users.xml ==> file ==> where we can add users to tomcat.
+
+webapps:
+    webapps directory contains the web applications 
+    --> where we will copy our war file
+
+logs 
+    logs directory contains
+    --> all logs related to tomcat.
+	--> all logs about deployed web application will be stored here.
+
+
+
+
+Assignment:
+
+
+Steps to deploy Acecloudacademy web application / project?
+-------------------------------------------------------
+
+1. clone source code of Acecloudacademy project
+      git clone https://github.com/Acecloudacademy/maven-repo.git
+
+2. cd maven-repo.git
+
+3. build source code to generate artifact / war file.
+    mvn clean package
+
+4. copy the generated war file to webapps directory inside tomcat installation deirectory
+    cp <war_file> /opt/tomcat9/webapps/
+	cp maven-web-application.war /opt/tomcat9/webapps/
+	
+    sudo cp maven-web-application.war /opt/tomcat9/webapps/
+	
+	
+5. stop running tomcat & start tomcat 	
+    sh /opt/tomcat9/bin/shutdown.sh --> script to stop tomcat
+	sh /opt/tomcat9/bin/startup.sh --> script to start tomcat
+
+6. access webapplication / website using
+   http://<public_IP>:8080/<warfilename>
+   
+   http://107.21.159.218:8080/maven-web-application/
+   Acecloudacademy Project(CI/CD Setup)
+==================================
+1.Jenkins Master
+2.Jenkins Slave
+3.Tomcat Server
+
+====================================================== 
+1.Jenkins Master===(installed java, git and jenkins)===(SSH Agent Plugin, Pipeline stage view plugin)===Tools config(maven installed path)
+
+2.Slave server==job will going to execute===(git, java, maven)---> use same class notes to configure the slave machince
+
+Note: Install java-11 in slave machine.
+
+3.Tomcat server(Web application server-site)===(java, tomcat)===depends on applications users access
+
+NOTE:
+Install Java-17 in tomcat server
+
+sudo dnf install java-17-amazon-corretto -y
+
+Install Amazon Corretto JDK
+If Amazon Corretto JDK is not installed or installed incorrectly, follow these steps to install it:
+
+Add Amazon Corretto Repository:
+*******************************
+sudo rpm --import https://yum.corretto.aws/corretto.key
+sudo curl -Lo /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+
+Install Amazon Corretto JDK:
+****************************
+sudo yum install -y java-17-amazon-corretto-devel
+Verify Installation:
+
+java -version
+
+
+------------------------------------------------------------
+#Change the ownership of tomcat9 dir to ec2-user
+[root@ip-172-31-9-163 tomcat9]# chown -R ec2-user:ec2-user /opt/tomcat9/
+
+=============================================================
+
+GitHub Link:https://github.com/Acecloudacademy/maven-repo.git
+
+
+==============================================================
+pipeline {
+    // add your slave label name
+    agent { label 'slave_node'}
+    tools{
+        maven 'maven-test'
+    }
+    stages {
+        stage ('Checkout_SCM') {
+
+            steps {
+          	    
+	     checkout scm
+            }
+        }
+
+        stage ('Maven_Build') {
+
+            steps {
+               sh 'mvn clean package'
+            }
+        }
+        
+        stage ('Deploy_Tomcat') {
+
+            steps {
+	      sshagent(['tomcat-web-server']) {
+              sh "scp -o StrictHostKeyChecking=no  target/maven-web-application.war  ec2-user@65.2.123.118:/opt/tomcat9/webapps"
+	      }
+         }
+        }
+        
+    }
+}
+

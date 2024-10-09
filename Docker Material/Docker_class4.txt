@@ -1,0 +1,350 @@
+Agenda:
+=======
+- Ways of creating docker Images
+- Creating image from a running conatiner
+- Creating image from Dockerfile
+- Os level virtualization
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+commands for Accesing running containers:
+------------------------------------------
+<important-commands>
+
+1) To go into the shell of a running contianer which is moved into background:
+   -------------------------------------------------------------------------- 
+     docker attach <container_name/container_id> 
+
+2) To execute anycommand in a container (but from docker host)
+   --------------------------------------------------------------
+    docker exec -it container_name/container_id <command>
+      
+     Eg: 
+      1. To create a 3 file inside container 
+	 docker exec -it <container_name/container_id> touch file1 file2 file3
+              
+      2. To list files inside the container 
+         docker exec -it <container_name/container_id> ls -lrt
+
+
+Docker volumes practicals:
+---------------------------
+we have to use volumes because if container stops/exits/deleted then all files present in container gets deleted. 
+
+to persist (store) few important files present in container to dockerhost so that even if container deleted, we should have these important files present in docker host.
+
+also with volumes we can share files in one container with other containers also.
+
+    
+Important ponters on volumes:
+------------------------------
+1. Docker volume is simply a directory inside our container.
+2. we can declare a directory as a volume ONLY WHILE CREATING THE CONTAINER.
+3. we can’t create volume from already running container.
+4. we can share one volume across any number of containers. 
+5. We can map volume in two ways
+   - Host ←→ Container
+   - Container ←→ Container
+
+Benefits of Volume:
+------------------
+- Decoupling storage from containers. 
+- Share volume among different containers.
+- On deleting the container, the volume does not delete.
+
+Practicals on volumes:
+----------------------
+
+1. create a volume
+syntax: docker volume create <volume_name>
+        docker volume create myvol1
+		
+#observation: docker volume ls & see myvol1 gets created
+		
+2. lets assume important directory in our container is /opt/myimportantdirectory, now to preserve files present in this directory into docker host  
+
+  create a container with volume mounting along with docker run command
+  syntax: -v <volumeName>:<important_dir_path_in_container>
+
+  syntax: docker run --name c1 -v <volume_name>:<important_dir_path_in_container> -it ubuntu
+
+   ubuntu@ip-172-31-45-143:~$ docker run --name c1 -v myvol1:/opt/myimportantdirectory -it ubuntu
+#observation: we will be logged into container, now lets go inside the  /opt/myimportantdirectory/ & create files like   myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log & myimpfile5.log
+   root@b5dc730ffc84:/# cd /opt/myimportantdirectory/
+   root@b5dc730ffc84:/opt/myimportantdirectory#
+   root@b5dc730ffc84:/opt/myimportantdirectory# touch myimpfile{1..5}.log
+   root@b5dc730ffc84:/opt/myimportantdirectory#
+   root@b5dc730ffc84:/opt/myimportantdirectory# ls
+   myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log  myimpfile5.log
+
+press ctrl p+q ==> come out of container & back to dockerhost
+
+
+3. verify the files present in docker host as in containers directory
+
+all mounted volumes file will be avaialble in /var/lib/docker/volumes/<volumeName>/_data
+
+    ubuntu@ip-172-31-45-143:~$
+    ubuntu@ip-172-31-45-143:~$  cd /var/lib/docker/volumes/myvol1/_data
+    ubuntu@ip-172-31-45-143:/var/lib/docker/volumes/myvol1/_data$ ls
+    myimpfile1.log  myimpfile2.log  myimpfile3.log  myimpfile4.log  myimpfile5.log
+    ubuntu@ip-172-31-45-143:/var/lib/docker/volumes/myvol1/_data$
+
+#observations: now try deleting c1 container we will still have all files present in /var/lib/docker/volumes/myvol1/_data directory
+
+
+4. With volume mounts we can share the same files with another container also:
+  lets create a conatiner with amazonlinux image, named c2 with using volume mounts mounted to /opt/mydir1 
+  
+  ubuntu@ip-172-31-45-143:~$ docker run --name c2 -v myvol1:/opt/mynewdirectory -it amazonlinux
+  bash-5.2#
+  bash-5.2# cd /opt/mynewdirectory 
+  bash-5.2# ls
+  myimpfile1.log 	myimpfile2.log 	myimpfile3.log 	myimpfile4.log 	myimpfile5.log
+  bash-5.2#
+
+  #observations: after container gets created go to mounted directory i.e (/opt/mydir1) & list file, you can see all files from volume will be avaialble 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Q: How do you list all Docker volumes on your system?
+   Use the command docker volume ls.
+
+Q: How do you inspect a Docker volume?
+   Use the command docker volume inspect <volume_name>.
+
+Q: How do you remove a Docker volume?
+   Use the command docker volume rm <volume_name>.
+
+Q: Can you share Docker volumes between multiple containers?
+   Yes, volumes can be shared between multiple containers by specifying the same volume name when creating new container.
+docker 
+
+
+
+
+Docker Images:
+--------------
+we can get docker images in 2 ways 
+- Pre-defined images ==> images which we download from dockerHub
+- Custom docker images ==> custom images created by devops engineers / developers of any company
+
+
+
+
+What are the ways through which we can create docker images?
+-----------------------------------------------------------------------------------
+
+There are three ways through which we can create docker images.
+
+ 1. We can download any docker image directly from docker hub (using docker pull command) 
+    docker images in dockerhub  are prepared & maintained by docker company and docker community.
+ 
+ 2. We can create our own docker images form our own docker containers. 
+       i.e. first we create container form base docker image taken form docker hub and then by going inside container, we can install all required softwares and then create docker image from our own docker container.
+  
+ 3. We can create docker image from a Dockerfile.  It is the most preferred way of creating docker images.
+ 
+
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ 
+ 
+ 
+Creating a custom image from any running container?
+---------------------------------------------------
+- create a container
+ 
+- do your customizations
+   customizations ==> install any softwares (or) add files / directories
+
+- docker diff <ContainerID or ContainerNAME>
+  docker diff commmand shows custom changes we have made in the container incomparison with original image.
+  
+- docker commit  <container_name>     <new_image_name>:<tag>
+   docker commit command will create image from the containername specified
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+
+
+Dockerfile:
+===========
+- A text file which uses predefined keywords or instructions to build a docker image.
+
+- Automation of docker image creation
+   • FROM
+   • RUN
+   • CMD
+
+
+
+
+Steps involved in creation from docker image to running container:
+------------------------------------------------------------------
+Step 1: create a file named Dockerfile
+Step 2: Add instructions in Dockerfile
+Step 3: Build Dockerfile to create image
+Step 4: Run image to create container
+
+
+
+
+Using docker file
+--------------------
+This is a simple text file, which uses  predefinied keywords for creating customized docker images.
+
+Key words or insrtuctions used in docker file  ( case sensitive )
+
+  1) FROM  --  specify the base image for building a new image.
+  
+  2) MAINTAINER -- This represents name of the organization or the author who created this docker file.
+  
+  3) RUN  -- Used for running linux commands while creating image.
+             It is generally helpful for installing the software in the image.
+
+  4) CMD   -- This is used to specify the initial command that should be executed when the container starts.
+
+
+****Important_interview_Question*****
+What is difference between RUN & CMD in dockerfile?
+----------------------------------------------------
+- RUN ==> RUN instructions will get executed while image is getting created
+- CMD ==> CMD instructions will get executed as initial command (first command) when a container gets created
+
+
+
+
+Scenario 1:
+-----------
+Create a docker iamge named myimage & tag as v1, take ubuntu as the base image and specify the maintainer as bharath. Construct an image from the dockerfile.
+
+
+
+vi Dockerfile
+
+FROM ubuntu
+MAINTAINER bharath
+
+inorder to create a image from dockerfile, we have to use docker build command  like below
+
+docker build -t <image_name>:<tag_name> .
+
+docker build -t myimage:v1 .
+
+Note:
+-----
+ . (dot) ==> dot in docker build command indicates the Dockerfile present in current directory
+ its always a best practice to keep Dockerfile in seperate directory
+ # in dockerfiles indicates comment, these lines will be skipped from execution
+ 
+ 
+Scenario 2:
+-----------
+Create a docker image named helloimage with tag as v3, take amazonlinux as the base image, create a file /etc/hellofile which has content "hello everyone".
+
+vi Dockerfile
+
+FROM amazonlinux 
+MAINTAINER bharath
+RUN echo "hello everyone" > /etc/hellofile
+
+
+docker build -t <image_name>:<tag_name> .
+
+
+#create a container from created image & go inside the container & cat /etc/hellofile to verify the content
+
+
+Scenario 3:
+-----------
+Create a docker iamge named amazonlinuxgit with tag as 2023, take amazonlinux as the base image, i want git to be available in my container, Construct an image from the dockerfile.
+
+
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y
+RUN yum install git -y
+
+
+inorder to create a image from dockerfile, we have to use docker build command 
+
+docker build -t amazonlinuxgit:2023 .
+
+#observation ==> create conatiner, login & verify the git installation 
+
+
+
+Scenario 4:
+-----------
+create an image named importantImage with tag as v1
+take ubuntu as the base image, Whenever i start my container, i want date command / program to get executed
+
+vi Dockerfile
+
+   FROM ubuntu
+   MAINTAINER shreeshail
+   #run instructions will always get executed at the time of image creation
+   #cmd instructions will always get executed as first command, whenever we create a container from this image
+   CMD date
+
+docker build -t importantImage:v1 .
+
+ubuntu@ip-172-31-45-143:~$ docker run --name c5 -it importantImage:v1
+Mon Oct 30 03:52:09 UTC 2023
+ubuntu@ip-172-31-45-143:~$
+
+
+Observation:
+  eventhough we have specified docker run command with -it container doesent open interactive terminal, container just executed date command as mentioned in CMD instruction of Dockerfile & container gets moved into exited state.
+  what is the reason behind this?
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+Key words used in docker file.......< continued....>
+
+
+5) ENTRYPOINT -- used to specify the default process that should be executed when container starts.
+It can also be used for accepting arguments from the CMD instruction.
+
+
+6) USER  -- used to specify the default user who should login into the container.
+
+7) WORKDIR --  Used to specify default working directory in the container
+
+8) COPY  --  Copying the files from the host machine to the container.
+
+9) ADD  -- Used for copying files  from host to container, it can also be used for downloading files from remote servers.
+
+10) ENV  --  used for specifying the environment variables that should be passed to the container.
+
+11) EXPOSE -- Used to specify the internal port of the container
+
+12) VOLUME  -- used to specify the default volume that should be attached to the container.
+
+13) LABEL  --  used for giving label to the container
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignament:
+------------
+- create different images with different Base image flavor.
+- investigate, why container stopped automatically after using CMD Instruction in senario4 ?
+ANS: the instructions mentioned in the command(CMD) executed hence its stoped, to make it run indeinately or to be alive start a foreground service in webserver  
+~~~
+- difference between && (and operator) and || (or operator) used in linux.

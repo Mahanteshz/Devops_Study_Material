@@ -1,0 +1,114 @@
+
+
+NOTE on How docker / containeraization changed ways of application deployment ?:
+-----------------------------------------------------------------------------------
+
+Before Docker / containeraization found:
+-----------------------------------------
+CI process :
+• Developers pushes code to SCM TOOLS (i.e GitHub)
+• Jenkins (CI tool) sees that new code is available. It builds the code using maven and generates artifacts(like jar/war)
+• Jenkins saves the artifacts(like jar/war) in to artifactory ( Nexus / Jfrog ).
+
+CD process :
+• Setup dependencies(Software's like java, tomcat etc....) and other configuration files needed to deploy Application.
+• Download the war files from artifactory ( Nexus / Jfrog ) & copy to tomcat webapps directory.
+• ReStart the tomcat application
+
+
+Cons / disavantages of above processes:
+---------------------------------------------------------
+• Packaging and deploying applications in multiple environments is very challenging job. 
+• Applications may work in one environment which may not work in another environment. The reasons for this are 
+varied; different operating system, different dependencies, different libraries, software versions.
+
+
+
+After Docker / containeraization found:
+--------------------------------------------------------
+CI process :
+• Developer pushes code to SCM TOOLS (i.e GitHub)
+• Jenkins (CI tool) sees that new code is available. It builds the code using maven and generates a application package(like jar/war)&  also we will create docker image ( which has application code + artifacts (jar/war)  + dependencies (Software's like java,maven,tomcat) + configuration files if any )
+• CI Will push docker image to the Private Regestries / artifactory (Nexus/JFrog etc).
+
+CD process :
+• Download the Docker image(package).
+• Start the docker image which will create a container where our application will be running.
+
+Advantages:
+run docker container which has application stored inside that, with this
+Application works seamlessly in any environment be it dev or QA or UAT or prod.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note:
+-----
+
+in all companies will be having different environment before going live in to production. 
+
+Environments:
+-------------
+environment is group of servers created for usage by different teams (developemnt team, diffrent test) team based on thier functionalities.
+We typically may have four environments along any software's lifecycle.
+
+
+Development / dev environment:
+------------------------------
+- This environment is used by developers.
+- Development environment is configured for developers to write code quickly, build, deploy & verify changes by running some basic tests(unit tests).
+- There would be many deployments in Development environment 
+- once the results in dev are sattisfactory, code will be promtoed to QA environment
+
+
+Testing / QA environment:
+-------------------------
+- This environment is used by QA engineers or testers.
+- here QA enginners (or testers) will test the application, if application has any issues testers will report bug to developers & ask them to fix that.
+- lesser frequent deployments than development environment.
+- if application passes all tests, test team agrees the changes, Next we will deploy the application to staging / UAT environments.
+
+
+UAT / Staging environment:
+--------------------------
+- This environment is used to give demo of application to customers.
+- The goal of a staging / UAT environment is to simulate production as much as possible.
+- Once customer approves all changes done to application, Next we will deploy the code to production environment.
+
+
+Production:
+-----------
+- Production environment is the live environment. 
+- When the end-user use a web/mobile application, the application would be operating on a production server. It’s been created in the production environment. 
+- very very less frequent deployments compared to other environments.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note:
+-----
+********important_interview_question****************
+
+How to reduce DOCKER image size:
+-------------------------------
+as devops enginner we also needs to keep our image size lesser
+
+to make our image size lesser we have few options
+1. using lightweight images as base image eg: alpine linux  
+2. using mutlistage builds
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignments:
+------------
+create a dockerimage to deploy  acecloudacademy application along with all its dependencies (java,git, maven,tomcat, war file) use ubuntu 
+(or) amazonlinux as base image
+
+
+

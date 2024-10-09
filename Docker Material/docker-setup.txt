@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# To install git run below command
+sudo yum install git -y
+
+# To install run below command
+sudo yum install maven -y
+
+# To install docker run below commands 
+sudo yum update -y
+
+sudo yum install docker -y
+
+sudo service docker start
+
+# Add ec2-user to docker group by executing below command
+
+sudo usermod -aG docker ec2-user
+
+# To install docker compose 
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+#Give permission to execute docker compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# To check docker compose version 
+docker-compose --version
+

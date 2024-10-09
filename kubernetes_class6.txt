@@ -1,0 +1,132 @@
+Deployment Object:
+------------------
+This is also an high level k8s object ,
+which can be used for running multiple replicas of a pod with other features like scalling, load balancing and perform rolling updates.
+
+Deployment makes sure that desired number of pods (replicas) specified in the manifest file, are always up and running. If a pod fails to run, deployment will remove that pod and replace it with a new one.
+
+deployments comes with advanced features like:
+- update application to newer versions without downtime.
+- rollback to older deployment versions.
+- scale deployment up or down.
+
+
+
+How does a Deployment ensure high availability?
+----------------------------------------------
+deployment ==creates==> replicasets ==creates==> pods ==creates==> Containers( our application runs inside the container)
+
+Deployments maintain high availability by managing replica sets. 
+If a Pod fails due to any reason, the Deployment removes the failed pod with new pod & maintains the desired state ensuring high availablity.
+
+deployment startegies used in kubernetes?
+-----------------------------------------
+
+   i. Recreate strategy: 
+       - deleting all pods of old version at once & creating new pods with new version.
+	   - this startegy we can observe application downtime.
+	   
+   ii. Rolling update strategy: 
+       - it will gradually delete 1 old version of a pod & bring 1 new version of a pod till all old pods gets replaced
+       - in this startegy we will not see any applocitaion downtime.
+	   - this is the deafult startegy used in k8s
+
+
+Syntax / Template to write deployment manifest file
+---------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <DeploymentName>
+  labels:
+    <key>: <value>
+spec:
+  replicas: <noOfReplicas>
+  selector:
+    matchLabels:
+      <key>: <value>
+  template: # POD Template
+    metadata:
+      name: <PODName>
+      labels:
+	    <key>: <value>
+    spec:
+    - containers:
+      - name: <nameOfTheContainer>
+	    image: <imageName>
+
+...
+
+
+create a deployment-defintion file with nginx:1.7.9 image with 4 replicas:
+--------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx-deployment
+  labels:
+    author: bharath
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      author: bharath   
+  template:
+  # here paste content of pod manifest file without apiversion & kind 
+    metadata:
+      name: nginx-pod
+      labels:
+        author: bharath
+    spec:
+      containers:
+      - name: container2
+        image: nginx:1.7
+
+
+
+kubectl create -f <object_file_name>.yaml --> To create a deployment object with a definition file
+kubectl get pods  ( observe all pods created started by deployment)
+
+
+to list deployment:
+kubectl get deployments (or) kubectl get deploy
+
+to delete deployment:
+kubectl delete deployment <deployment-name>
+
+to know complete details about deployments:
+kubectl describe deployment <deployment-name> 
+
+it will show details about number of replicas used, stategy type, image used etc...
+
+
+Note:
+-----
+
+1. Auto-Healing feature With Deployment Controller:
+---------------------------------------------------
+whenever we delete a pod which is running from any controller objects (i.e  rs / deployment) new pod will get created this feature can be called as Auto-healing
+
+Deleting one the pods manually in (i.e  rs / deployment) and observe the auto-healing behaviour of deployment
+
+
+
+*** important interview question ***
+2. what all Deployment strategies used in kuberenets:
+-----------------------------------------------------
+   i. Recreate strategy: 
+       deleting all pods of old version at once & creating new pods with new version , this startegy we can observe application downtime.
+	   
+   ii. Rolling update strategy: 
+       - it will delete 1 old version of a pod & bring 1 new version of a pod 
+       - this startegy we will not see any downtime.
+	   - this is the deafult startegy used in k8s
+    
+
+
+
+3. How to scale the deployment in k8s (scale up --> increasing the replicas of a pod, scale down --> decreasing the replicas of a pod):
+-------------------------------------------------------------------------------------------------------------------------------------
+    kubectl scale deployment <deployment_name> --replicas <num_of_replicas>
+	
+	if traffic coming to our applications increases, then we need to increase the number of replicas & when traffic reduces we can descrease the number of replicas 

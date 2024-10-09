@@ -1,0 +1,273 @@
+AGENDA:
+-------
+- Dockerfile instructions
+- CMD vs ENTRYPOINT
+- Registry in dockerhub
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+ex1: create an image named ubuntujava with tag as v1 
+     -  take ubuntu as the base image,
+     -  update apt package & install java (or default-jre) 
+     -  Whenever i start my container, i want below echo command to get executed  (i have created image / container with java installed)
+
+
+  FROM ubuntu 
+  RUN apt update -y
+  RUN apt install default-jre -y
+  CMD echo "i have created image / container with java installed 
+
+#observation: build the image & run container, once container gets started observe the CMD instruction gets executed (echo command)
+
+Note:
+-----
+as best practice in CMD & ENTRYPOINT instructions use them inside square brackets with comma seperation, 
+i.e exec form ==> ["<commands>"] 
+ex: ["echo","hello world"]
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Instructions in Dockerfile (continued....)
+-------------------------------------------
+
+8) COPY --> Copying the files from the dockerhost machine to the container.
+   syntax: COPY <files/Directory_name_in_dockerhost> <path_inside_container>
+   
+9) ADD  --> Used for copying files  from host to container, it can also be used for downloading files from remote servers.
+   synatx: ADD <files/Directory_name_in_dockerhost> <path_inside_container>
+	
+   ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz /opt
+
+
+
+What is difference between COPY & ADD instruction in Dockerfile?
+-----------------------------------------------------------------
+Both COPY & ADD instructions are used to copy files/Directories from DockerHost to Container.
+ADD can also be used to download file (like wget command in linux) & also ADD can untar/unzip file inside containers,
+
+
+
+
+10) ENV  -->  used for specifying the environment variables that should be passed to the container.
+
+  ENV <Variable_name> <variable_value>
+  
+  ENV sportsman viratkohli
+ 
+  inside container ==>  echo $sportsman
+  
+11) EXPOSE -- Used to specify the port on which we want to run our container
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+What is difference between CMD &  ENTRYPOINT instruction in Dockerfile:
+------------------------------------------------------------------------
+
+CMD ==> we will define the commands that needs to be executed when a container starts.
+ENTRYPOINT ==> we will define the executable that needs to be used when a container starts.
+
+
+********important_interview_question****************
+
+Difference between CMD & ENTRYPOINT ?
+-------------------------------------
+
+CMD sets the default commands that needs to be executed when a container starts.
+CMD command/instruction can be easily overridden while creating a container with different command.
+whereas ENTRYPOINT command/instruction can't be overridden while creating a container.
+
+Most of Docker containers by default have ENTRYPOINT ==> which is ==> /bin/sh -c
+
+ENTRYPOINT generally used if we want to container as an executable ( like only purpose of running container is to run a script only)
+
+
+
+Can we have both CMD & ENTRYPOINT in docker file? 
+-------------------------------------------------
+Yes we can have both in a Dockerfile. but CMD instructions will be passed as an arguments for ENTRYPOINT.
+
+
+ex: usecase1 of using both CMD & ENTRYPOINT?
+    FROM ubuntu
+    CMD ls
+    ENTRYPOINT ["echo", "Helloworld"]
+
+    build above Dockerfile, run container ==> container Will be executed as below ===> Helloworld ls 
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Scenario 1:
+-----------
+Create a dockerfile by taking 
+    - ubuntu as the base image 
+    - create a user as bharath & make him as default user after logging in container
+    - default working directory as opt  
+Construct an image from the dockerfile.
+
+vi Dockerfile
+
+
+FROM ubuntu
+RUN useradd bharath
+USER bharath
+WORKDIR opt
+
+docker build -t <image_name> .
+
+create conatiner & verify
+
+Scenario 2:
+------------
+Create a dockerfile by taking 
+    - alpine as the base image 
+    - copy samplefile to docker container to /opt directory
+    Construct an image from the dockerfile.
+--> create a file called samplefile in dockerHost 
+
+
+
+vi Dockerfile
+   FROM alpine
+   COPY ./samplefile /opt
+
+docker build -t <image_name> .
+
+create container & verify
+
+
+
+Scenario  3:
+------------
+Create a dockerfile by taking 
+- busybox as the base image 
+- download maven installation file to docker conatiner /opt directory
+Construct an image from the dockerfile.
+
+FROM busybox
+ADD https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz /opt
+
+
+Note:
+-----
+Alpine & busybox are ligh weight (smaller sized) docker images which will have all linux utilities
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+****IMPORTANT****
+
+How long will a docker container run?
+--------------------------------------
+Every docker image come with default process. 
+As long as default process is running, the container will be running condition. The moment, the default process execution is completed, the container will get itself moved to exited / stopped state.
+
+(default process ==> whatever mentioned in CMD instruction in Dockerfile) 
+in already running containers, we can check default process using docker ps -qa command & observe under COMMAND sections  
+
+
+
+Practicals & observations on understanding default process in containers:
+-------------------------------------------------------------------------
+
+scenario 1:
+-----------
+Create Dockerfile with below mentioned instructions
+
+FROM ubuntu
+CMD ["date"]
+
+build this Dockerfile & create a conatiner from it & observe that conatiner has moved in to exited state.
+
+Reason? ==> container has exited, because it has completed running its default process (whatever mentioned in CMD instruction i.e date command )
+
+
+For all linux based containers( ubuntu,centos,amazonlinux.....) , the default process is shell process for that Dockerfile will look like
+
+FROM ubuntu
+CMD ["/bin/bash"]
+
+/bin/bash or bash -- is nothing but the terminal.
+Hence we are able to enter -it mode  in ubuntu/centos or any OS based containers.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+what is image Registry (or) container registry? 
+===============================================
+image registry is a centralized location for storing and distributing docker images. 
+The image registry allows you to push and pull the docker images as needed.
+
+Registries can be private or public.
+When the registry is public, the images are shared with the whole world, 
+whereas in the private registry the images are shared only amongst the members of an company or a team.
+
+Types of registry
+1) public registry, ex: dockerhub
+2) private registry ex: jfrog, nexus, ECR, ACR
+
+
+Create an account in hub.docker.com
+
+TO upload the image to hub.docker.com  ( docker login command is used )
+------------------------------------------------------------------------
+# docker login   ( provide docker_id and password )
+
+Usecase on pushing image to dockerhub:
+--------------------------------------
+Note: if we want to push image to dockerhub then image name should always start with docker_id / dockerhub username
+
+Create a docker image named amazonlinuxgit with tag as 2023, take amazonlinux as the base image, git to be available inside the container, Construct an image from the dockerfile & push it to docker hub.
+
+
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y
+RUN yum install git -y
+
+docker build -t <dockerHub_userID>/<imagename>:<tag> .
+
+docker push <dockerHub_userID>/<imagename>:<tag>
+
+login to docker hub GUI to see your image
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Assignment:
+-----------
+1. check, how copy files from dockerhost to already running container(docker cp /home/user/documents/example.txt d5a8b8a2c46f:/app)
+
+2. Steps involved to deploy acecloudacademy web application in a container 
+   - launch ec2 instances change security group settings (inbound rules set to all traffic & anywhere)
+   - install git, java, maven
+   - clone acecloudacademy github repo  ( https://github.com/acecloudacademy/maven-repo.git )
+   - build using maven to generate war file
+
+   after generating war file from above steps
+   Write a Docker file with tomee as a base image
+   COPY generated war file to webapps directory inside the container & expose on port==> EXPOSE 8080
+   build Dockerfile to create image & run container so that we can access ===> acecloudacademy webapplication.

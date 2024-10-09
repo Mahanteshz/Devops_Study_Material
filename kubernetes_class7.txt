@@ -1,0 +1,311 @@
+Agenda:
+----------
+- Deployment objects
+  -- increase replicas for a deployment
+  -- rolling update deployments
+  -- rollback a deployment
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+in deployment manifest-file:-
+
+replica:10
+strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 30%
+    type: RollingUpdate
+--------------------------------------------------
+
+What is maxSurge and maxUnavailable in k8s deployments?
+-------------------------------------------------------
+maxSurge will speedup the rolling update process
+maxSurge allows more Pods to be created temporarily to speed up the rolling update process.
+
+
+maxUnavailable will ensures the safety of rolling updates.
+maxUnavailable ensures that a minimum number of Pods are always available during the update, preventing too much downtime.
+
+For example, in a deployment with 10 replicas, 
+==> if maxSurge is set to 2 (or 20%), Kubernetes will create up to 2 extra Pods (12 total),
+==> if maxUnavailable is set to 2 (or 20%), only 2 Pod can be unavailable at any given time.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+in containerized applications ==> if we are updating our application to next version means, we are create new docker image with newer tag, we use the updated docker image in our manifest files
+
+nginx:1.7 ==> nginx:1.8 ==> nginx:1.9 ==> nginx:1.10
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Deployment ( continued......)
+-----------------------------
+create deployment with image ==> nginx:1.7 & 3 replicas
+
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: nginx-deployment
+  labels:
+    author: bharath
+    environments: staging
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      author: bharath
+      environments: staging
+  template:
+    metadata:
+      name: nginx-deployment-v1
+      labels: 
+        author: bharath
+        environments: staging 
+    spec:
+      containers:
+      - name: my-nginx-container
+        image: nginx:1.7
+        ports:
+        - containerPort: 80   
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+RollingUpdate startegy is default startegy type used in kubernetes
+
+Deployment based Practical scenarios:
+
+case 1: deploy a new application version (new image ==> nginx:1.8) using rolling deployment startegy?
+---------------------------------------------------------------------------------------
+
+
+developers ==> nginx:1.7 ==> nginx:1.8 ==> nginx:1.9
+
+if we update from version to another version of my application, only image name & tag (version) will be updated in deployment manifest file.
+
+
+syntax:
+kubectl set image deployment <deployment_name> <container_name>=<image_to_be_updated> 
+
+
+kubectl set image deployment nginx-deployment  my-nginx-container=nginx:1.8 --record=true
+	
+
+#To check the revision hitory
+
+kubectl rollout history deployment  <deployment_name>
+
+kubectl rollout history deployment  nginx-deployment
+
+case 2: deploy a new application version again (from nginx:1.8 to new image ==> nginx:1.9) using rolling deployment startegy?
+---------------------------------------------------------------------------------------
+
+kubectl set image deployment nginx-deployment  my-nginx-container=nginx:1.9 --record=true
+
+
+case 3: code deplyed in Version 1.9 has issues, we need to rollback to previous version (from latest version nginx:1.9 to old version ==> nginx:1.8)
+---------------------------------------------------------------------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Kubectl rollout options:
+=======================
+1.How to check a deployments history ?
+-------------------------------------------
+
+kubectl rollout history deployment <deployment_name>
+
+kubectl rollout history  deployment  nginx-deployment
+
+
+2. How to rollback deployment to previous version?
+-----------------------------------------------
+
+kubectl rollout undo deployment <deployment_name> 
+
+kubectl rollout undo  deployment  nginx-deployment
+
+
+(or) < to rollback to specific version >
+kubectl rollout undo deployment <deployment_name> --to-revision=<revision_number>
+kubectl rollout undo deployment nginx-deployment --to-revision=1
+
+
+3. How to Check the status of the rollout using status command ?
+-------------------------------------------------------------
+kubectl rollout status deployment <deployment_name>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Note:
+----
+How to expose GUI based application in docker 
+ In Dockerfile ==> EXPOSE 8080
+ docker run --name c1 -p <DockerhostPort>:<contasinerPort> <image_name> 
+ 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Service Object:
+---------------
+
+service objects is used to expose our application (port mapping)
+service object will provide a static ip address to our application running in pods.
+
+
+Service Object we use 3 ports in service manifest file, which are
+1. Target port -  Its is port on container 
+2. port - Refers to service reference port.
+3. hostPort -  Refers to host machine port to make it accessable from external network.
+
+
+*** important interview question ***
+
+What are different types of Service & difference between those ?:
+----------------------------------------------------------------
+1. clusterIP:
+    - It exposes the service within the Kubernetes cluster only.
+    - ClusterIP is used when we want the pods in the cluster to communicate with each other and not with external network(from internet or browser).
+    - This is default type of service object used in kubernetes.
+  * - using clusterip type service pod-to-pod communication will happen within the cluster
+
+
+2. nodePort: 
+   - It exposes the service both in and outside the cluster
+   - It exposes the service on each Worker Node’s IP at a static port (i.e., which is called NodePort).
+   - nodePort can be used, if we want to access the pods from an external network (Internet or broswer).
+   - NodePort must be within the range from 30000-32767
+
+
+3. LoadBalancer:    
+   - It exposes the service both in and outside the cluster, its the most preffered way of exposing a service in k8s.
+   - It exposes the service externally using cloud providers load balancer ( AWS - ELB-> Elastic load balaNcers).
+   - whenever the LoadBalancer service gets created it will also automtically create NodePort and ClusterIP services.
+
+
+
+
+how does pods-to-pod communication happens in kubernetes cluster?
+----------------------------------------------------------------
+using services (type-->clusterip) pod-to-pod communication will happen within the cluster
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Ex: create a deployment using jenkins image with 1 replicas & label environment: staging
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    environment: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      environment: staging
+  template:
+    metadata:
+      labels:
+        environment: staging
+    spec:
+      containers:
+      - name: jenkins-container
+        image: jenkins/jenkins
+		
+
+
+Expose the jenkins pods created as a part of above deployment ?
+create a servce oject of type nodePort & expose the application
+
+vi my-jenkins-service.yaml
+
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: my-jenkins-service
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 8080     #this is container port ==> jenkins container
+    port: 8080           #this is service objects refernce port
+    nodePort: 30001      #this is port assigning to worker node
+  selector:             
+    environment: staging
+
+Important Note on service:
+--------------------------
+service object will never creates pods.
+service object searches for all pods which have labels mentioned under selector keyword of service manifest file & expose those pods.
+in above example it will look for pods which have label as environment: staging, as jenkins pods have those labels (environment: staging) , it will expose all the jenkins pods on nodeport 30001. 
+
+How to access application from gui?
+-----------------------------------
+http://<public_ip_of_any_node>:<nodePort_portnumber>
+http://3.90.88.139:30001
+   
+
+**********************************************************************************************************
+ deploying zomato-like application as k8s deployment
+**********************************************************************************************************
+NotE: before starting this assignment delete all pods /deployments present in your cluster, as this application needs more resources 
+
+
+# create deployment named -- zomato deployment, replicas 1 , image ==> acecloudacademy/zomato-app-image:latest
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: zomato-deployment
+  labels:
+    type: food-delivery-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: food-delivery-app
+  template:
+    metadata:
+      name: zomato-pod
+      labels: 
+        type: food-delivery-app
+    spec:
+      containers:
+      - name: my-zomato-container
+        image: acecloudacademy/zomato-app-image:latest
+...
+
+create a service of type nodeport to expose zomato application
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-zomato-service
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 3000     #this is container port ==> zomato listening port on container
+    port: 3000           #this is service objects refernce port
+    nodePort: 30003      #this is node port assigning to all worker node
+  selector:
+    type: food-delivery-app
+...
+
+create service, once service matches pods using lables & slector & pods get exposed, access from GUI for zomato application
+
+
+Assignment:
+----------
+
+- Create a deplyment of netflix app4
+    image=acecloudacademy/netflix-clone-app:v1
+    replicas=2
+    netflix application runs on port 80 (container port)
+    expose this application to internet @ port 31111

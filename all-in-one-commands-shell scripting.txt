@@ -1,0 +1,8 @@
+1. To connect to remote systems:
+==> telnet <ip_of_remote_server> <port_number_tobe_checked>
+
+2. To list out cron jobs which are already configured:
+==> crontab -l
+
+3. To edit  crontab & schedule scripts:
+==> crontab -e

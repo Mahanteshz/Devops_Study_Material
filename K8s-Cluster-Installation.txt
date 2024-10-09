@@ -1,0 +1,34 @@
+K8s-Cluster-Installation-Steps
+==============================================
+
+Step1:
+# Update the OS
+apt-get update
+
+# Run on master node
+sudo hostnamectl set-hostname k8s-master
+
+#Run on worker node
+sudo hostnamectl set-hostname k8s-worker
+
+Step2: Run the common.sh script on both master and worker nodes
+sh k8s-common.sh
+
+Step2: Run Only on K8s-Master Node
+sudo kubeadm init 
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
+kubectl get nodes
+
+Step3: Join both the worker nodes to the cluster, command is already there is output, just copy paste on the worker nodes,
+Note: run kubeadm join with sudo
+
+kubeadm join 172.31.46.231:6443 --token 9bip0h.6vkeqqddhy122zkb \
+
+
+

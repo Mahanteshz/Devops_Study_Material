@@ -1,0 +1,156 @@
+Docker containers have several drawbacks, and container orchestration helps overcome these drawbacks in the following simple terms:
+
+Drawbacks of Docker Containers:
+-------------------------------
+
+1. Complexity:
+     If we have multiple containers, Managing many containers can be complex and time-consuming.
+
+2. Scaling:
+     It can be challenging to scale containers up and down to match application demand.
+	 
+3. High Availability: 
+     Ensuring applications are always available can be difficult.
+
+4. Load Balancing: 
+     Distributing incoming traffic evenly among containers can be a manual task.
+
+5. Resource Efficiency: 
+     Containers can sometimes use hardware resources inefficiently, leading to wastage.
+	 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Container orchestration:
+------------------------
+Container orchestration is a process of running docker containers in a distributed environment, on multiple docker host machines.
+
+container orchestration tools:
+------------------------------
+Docker swarm / kubernetes  is the tool used for performing container orchestration.
+kubernetes is most widely used  container orchestration tool in market.
+
+If we are only running a single container or two containers together then we may not need an orchestrator.
+
+
+How Container Orchestration Helps in overcoming docker container limitations?
+-----------------------------------------------------------------------------
+
+
+Container orchestration tools like Kubernetes solve these problems:
+
+1. Simplies the container handling: 
+     Orchestration tools takes care running containers in different dockerhosts, which will help in managing containers.
+	
+	 
+2. Auto-Scaling of containers: 
+     scaling means increasing / decreasing the number of containers.
+	 
+     Orchestration tools automatically scale containers based on demand, so your application can handle traffic spikes.
+	 
+3. High Availability: 
+     if a container fails (or) exits, orchestration tools automatically restarts the failed container (or) it will replace failed containers with new containers thus ensuring availablity.
+	 
+4. Networking: 
+     Orchestration tools can create & handle container networking, making it easier for containers to communicate with each other.
+	 
+5. Resource Efficiency:
+     Orchestration tools helps in controlling hardware resources used by containers.
+	 
+6. Load Balancing: 
+	 rather than running all container in 1 docker host, we can distrubute load (num of containers) to multiple docker host
+	 
+
+In simple terms, container orchestration makes it easier to deploy, manage, and scale containers, ensuring that your applications run smoothly, reliably, and efficiently in a containerized environment.
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Note on Keywords:
+---------------------------
+
+High availability (HA): 
+-----------------------
+  means any application is expected to be up & running all time.
+  we should build an application environment, which should be highly available. 
+ 
+  
+Downtime : 
+----------
+   if an application goes down due to any issue, we will call that as downtime.
+   we should build a system which will have zero downtime.
+   
+
+what all containerizations tools avaialble in market?
+==> Docker, container D , Podman & Rocket etc...
+    docker is most popular & widely used containerization tool 
+
+what all container ORCHESTRATION  tools avaialble in market?
+==> kubernetes, docker swarm , mesos
+    kubernetes is most popular & widely used container ORCHESTRATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+KUBERNETES:
+-----------
+- It is a container orchestration tool. 
+- Kubernetes is an open-source tool developed using GO programming language.
+- Kubernetes is als called as k8s
+- k8s was developed by Google in 2014 it was made open source & donated to CNCF.
+
+k8s designed in master-slave type architecture.
+ 
+Kubernetes creates cluster, where we will deploy our application in docker containers form.
+
+cluster is hosted by one node acting as the ‘master’ of the cluster, and other nodes(or dockerhosts) as 'worker nodes (or slave nodes)' which do the actual 'containerization' using docker. 
+
+what is cluster?
+==> cluster is a combination of  k8s master node (control plane) + worker Nodes (docker hosts)
+
+what is Master Node?
+- The master node is responsible for the management of Kubernetes cluster.
+   it has 4 main components kube-api server, kube scheduler, controller manager & etcd. [K,K,C,E]
+
+what is Worker Node?
+- Worker nodes are the nodes where the application actually running in kubernetes cluster.
+   it has 3 main components kubelet (agent) , kube-proxy & container engine (docker)
+ 
+
+Important Note on Naming conventions in kubernetes:
+----------------------------------------------------------------------------
+1. servers==> vm == machine == nodes == slaves(workers) == instances ==> same 
+2. Kubernetes is also called as k8s
+3. kubernetes master is also called as control plane
+4. kubernetes nodes are also called as slave node or worker nodes
+5. yaml files used in k8s are also called as definition files (or) manifest file.
+
+Kubernates Architecture:
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Kubernetes is a system that helps you manage a large number of applications running in containers.
+
+kubernetes is a combination of Master and worker nodes.
+
+1. Master Node (Control Plane):
+
+==> Master node is like the brain of the system, It controls and manages all the worker nodes where applications run.
+
+==> Master Node has a 4 components(KKCE), those are Kube API Server, Kube Scheduler, Controll Manager and ETCD.
+
+    1. Kube API Server: It’s like the front desk of Kubernetes and responsible to handle the request of the user, it recieves the input in yaml file format.
+    2. kube Scheduler: This decides where your applications should run based on the available resources.
+    3. Controller Manager: It keeps an eye on everything and makes sure all the applications are running smoothly and ensures actual state with that of desired state.
+    4. Etcd: This is like a database that stores all the important information and current state of the system.
+
+2. Worker Nodes:
+
+Each worker node runs the apps (containers), It consist of 3 components (KKC) Kubelet, kube proxy and Container Engine
+
+   1. Kubelet: It’s the main worker on each node that takes orders from the master and ensures that the containers are running properly.
+   2. Kube-proxy: It helps your applications communicate with each other, by managing the network traffic, Its is responsible for assigning IP address to the pod.
+   3. Container Engine: This is responsible for running container.
+
+Kubernetes helps make sure that your applications can scale, heal themselves (restart if something fails), and work together smoothly.
+

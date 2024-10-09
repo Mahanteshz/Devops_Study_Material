@@ -1,0 +1,26 @@
+version: '3' # docker-compose version
+
+services:
+  application:
+    image: my-2-tier-project
+    ports:
+      - "8080:8080"
+    networks:
+      - springboot-db-net
+    depends_on:
+      - mysqldb
+    volumes:
+      - /data/my-2-tier-project-app
+
+  mysqldb:
+    image: mysql:5.7
+    networks:
+      - springboot-db-net
+    environment:
+      - MYSQL_DATABASE=sbms # spring boot microservices
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - /data/mysql
+
+networks:
+  springboot-db-net:

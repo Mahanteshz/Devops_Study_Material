@@ -1,0 +1,1068 @@
+startup file ( .bashrc ):
+-------------------------
+startup file will get executed automatically, eachtime you login to your server.
+
+.bashrc file location ==> every user's home directory ==> /home/<user>
+
+each user will have his own .bashrc / startup file
+
+Observation on startup file:
+vi .bashrc ===> go to last line & add some echo statements & save comeout
+
+close your session (ctrl+D) & login again , you will see the message putup in .bashrc file printed as soon as you logsin.
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+telnet :
+--------
+Telnet is used to connect to remote systems. 
+it is oldest network protocol.
+it is not secure.
+It connects to servers and network equipment over port 23.
+
+syntax:
+telnet <ip_of_remote_server> <port_number_tobe_checked>
+
+note:
+yum install telnet -y
+
+
+
+how do you check a port number in another server is listening or not, from your server?
+----------------------------------------------------------------------------------------
+telnet <ip_address_remote_server> <port_number_tobe_checked>
+
+if the port in remote server is opened(listening) ==> we get connected to that server
+if the port in remote server is not opend(non listening) ==> we get connection failed error
+
+
+
+
+ssh-keys:
+---------
+ssh keys help secure your communication with other servers.
+ssh-keygen creates keypair(two files). 
+   1. public key (like a lock) ==> can be share with any servers / anyone
+   2. private key (like a key) ==> keep it secret (dont share with anyone).
+
+syntax: ssh-keygen 
+observation: 
+ - after running above command, use enter (keyboard) 3 times
+ - all ssh files get stored in the user's home directory ==> /home/<users_name>/.ssh
+ - in .ssh directory
+    ~/.ssh/id_rsa.pub ==> publickey
+    ~/.ssh/id_rsa     ==> private key 
+
+Note:
+-----
+in linux home directory is also called as ~
+
+Assignment:
+-----------
+Establish passwordless connection between servers.
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+variables:
+----------
+Variables are memory location which can store some values.
+
+syntax: <variable_name>=<variable_value>
+        eg: MYNAME=devops_user
+  
+
+
+How to print / check / substitute / call values of a variable?
+--------------------------------------------------------------
+
+$ (dollar) is mandatory while substituting varaible ==> $<variable_name>
+
+echo $<variable_name>
+
+
+ex: PLAYER=viratKohli
+    echo " my favorite sportsmen is $PLAYER "
+
+
+Variable types:
+---------------
+1. Local variables / user defined variables.
+   variables created by user
+
+
+2. system / predefined variables.
+   variables created by system
+   env ==> command to check system defined variables
+
+
+
+user defined variables are only valid till your terminal(session) exists or your servers running.
+
+
+to store variables irrespective of terminal running or restarts
+
+How to set variable permanately in all shell sessions & also server restarts ?
+------------------------------------------------------------------------------
+Answer: By adding the variable inside startup script ( ~/.bashrc ).
+        
+
+
+**********IMPORTANT***********************
+
+EXIT CODE 
+-------------
+every command /script generates an auomatic code which signifies, previous command execution is succesfull or not
+syntax: echo $?
+
+if output is 0 zero ==> command executed succesfully
+if output is  non-zero ==> Command not executed succesfully  
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   
+
+SHELL:
+------
+1  Shell is responsible to read command provided by user.
+2. Shell will check whether the command is valid or not.
+3. Shell interpretes (converts) that command into kernel understandable form & Kernel execute that command with the help of hardware. 
+   
+Shell + kernel = Linux OS.
+
+Types of shell:
+---------------
+1. sh    ==> basic shell, earlier / olden days is used in unix   ==> /bin/sh
+2. bash  ==> adavnced shell, which is used in linux    ==> /bin/bash 
+others: c-shell, k-shell etc
+
+Note: echo $SHELL ==> Command to check which shell we are using
+
+Steps to create & execute shell script:
+----------------------------------------
+step1. shell script will have extension called <script-name>.sh
+        vi <script-name>.sh
+step2. in the script first line we are going to write is called as shebang  #!/bin/bash
+         
+step3. you add your commands (save the script file)
+
+step4.  execute the script 
+       sh <script-name>.sh  (or) bash <script-name>.sh (or) ./<script-name>.sh
+
+
+
+what is shebang line, why its sused?
+------------------------------------
+shebang line is used to specify interpreter (or) shell to be used for execution of script
+
+
+can we run script without shebang line?
+------------------------------------------
+yes, in that case whatever default shell is there, that will get used.
+
+
+
+
+script1. write a shell script to print date & time.
+---------------------------------------------------
+vi date-script.sh
+
+#!/bin/bash
+echo "Current date and time...."
+date
+
+save & quit 
+
+execute script
+sh date-script.sh
+
+
+
+script2. write a shell script to CHECK Storage(HDD) of server.
+--------------------------------------------------------------
+
+vi STORAGE-script.sh
+
+#!/bin/bash
+echo "Current storage used is ...."
+df -kh | head -5 | tail -1 | awk -F " " '{print$5}'
+
+save & quit 
+
+execute script
+sh STORAGE-script.sh
+
+
+
+script3: write a script to create a variable (sportsman=viratkohli) & verify the variable creation using echo command:
+---------------------------------------------------------------------------------------------------------------------- 
+[ec2-user@ip-172-31-6-171 ~]$ cat vars_check.sh
+#!/bin/bash
+sportsman=viratkohli
+echo "my fav sportsamen is $sportsman"
+
+
+
+
+
+script4: write a script to have employee data coming as variables & verify the variable creation using echo command:
+----------------------------------------------------------------------------------------------------------------------
+[ec2-user@ip-172-31-93-35 ~]$ cat employee_data.sh
+
+#!/bin/bash
+EMP_NAME=alice
+EMP_ID=54234
+EMP_LOC=bangalore
+EMP_STATE=karnataka
+echo "Display employee name $EMP_NAME "
+echo "Display emloyee id $EMP_ID "
+echo "Display employee location $EMP_LOC "
+echo "Display employee state $EMP_STATE "
+
+
+
+script5: script to check harware resources:
+-------------------------------------------
+[ec2-user@ip-172-31-6-171 ~]$ cat ram_usage_check.sh
+
+#!/bin/bash
+echo "Current free ram available is..."
+
+free -m | grep Mem | awk -F " " '{print $4}'
+#free -m
+
+echo "current disk usage is..."
+df -kh .
+
+echo "number of cpu...."
+nprocNote:
+-----
+- static content (variable key & value stored inside script /file )= fixed content = Hardcoded == all are same
+ex: employee_data.sh
+
+
+
+[ec2-user@ip-172-31-93-35 ~]$ cat employee_data.sh
+#!/bin/bash
+set -x
+EMP_NAME=alice
+EMP_ID=54234
+EMP_LOC=bangalore
+EMP_STATE=karnataka
+echo "Display employee name $EMP_NAME "
+echo "Display emloyee id $EMP_ID "
+echo "Display employee location $EMP_LOC "
+echo "Display employee state $EMP_STATE "
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Command line arguments
+------------------------------
+ in command line arguments we will give input to the script dynamically
+ 
+ used to pass dynamic values to script while executing script
+ 
+ syntax:  sh <scriptname>.sh <argument1> <argument2> <argument3>
+ 
+ $1 --> 1st argument value
+ $2 --> 2nd argument value
+ $3 --> 3rd argument value
+ 
+ 
+ 
+-----------------------------------------------------------------
+
+ex of Command line arguments
+
+[ec2-user@ip-172-31-93-35 ~]$ cat employee_data_2.sh
+echo "Display employee name $1 "
+echo "Display emloyee id $2 "
+echo "Display employee location $3 "
+echo "Display employee state $4 "
+
+
+
+sh /home/ec2-user/scripts/compute_resource_usage.sh
+
+while executing pass arguments like below format
+sh <scriptname>.sh <argument1> <argument2>    <argument3>   <argument4>
+
+[ec2-user@ip-172-31-93-35 ~]$ sh employee_data_2.sh rohit 18976 mumbai Maharashtra
+Display employee name rohit 
+Display emloyee id 18976
+Display employee location mumbai
+Display employee state Maharashtra
+
+observations from the above example:
+ $1 ==>  rohit   --> 1st argument to script 
+ $2 ==>  1876         --> 2nd argument to script 
+ $3 ==>  mumbai       --> 3rd argument to script
+ $4 ==>  Maharashtra  --> 4th argument to script
+
+
+ 
+ ---------------------------------------------------------
+
+
+arithamatic expressions
+----------------------------
+we need to use expr keyword to do any arithamatic operations in linux
+
+syntax: expr <value1> <arithamatic_operator> <value2>
+
+arithamatic operators are
+    + addition
+    - substarction
+    / division
+    * multiplication
+
+Note:
+ \ (backward slash) is called as escape charecter in linux : it is used to bypass some functionalities( its used in multiplying with *)
+  expr $value1 \* $value2
+
+arithamatic_operators
+------------------------
+
+[ec2-user@ip-172-31-93-35 ~]$ value1=20
+[ec2-user@ip-172-31-93-35 ~]$ value2=5
+[ec2-user@ip-172-31-93-35 ~]$
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 + $value2
+25
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 - $value2
+15
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 * $value2
+expr: syntax error
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 \* $value2
+100
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 / $value2
+4
+[ec2-user@ip-172-31-93-35 ~]$ expr $value1 % $value2
+0
+[ec2-user@ip-172-31-93-35 ~]$
+
+
+Note:
+----------
+
+value1=25
+value2=15
+
+   to find sum of value1 & value2
+     SUM=value1+value2
+	 SUM=25+15
+	 SUM=40
+
+In all programming language / scripting first execution will always be R.H.S(right hand side) like how it has been taught in our school
+
+ 
+ 
+Note:
+-----
+
+ 1. ` ` --> back quoutes, these are used for mathematical opertions 
+          eg: SUM=`expr $value1 + $value2`
+ 
+ 
+ 
+----------------------------
+Hardcoded format 
+---------------------
+[ec2-user@ip-172-31-93-35 ~]$ cat arithmatic_op.sh
+#!/bin/bash
+#Author= bharath
+value1=25
+value2=15
+#to find sum of value1 & value2
+SUM=`expr $value1 + $value2`
+echo " sum of value1 + value2 is $SUM "
+
+
+ Dynamic parsing / Command line arguments parsing
+ -------------------------------------------------------------
+ [ec2-user@ip-172-31-93-35 ~]$ cat arithmatic_op_2.sh
+#!/bin/bash
+#Author= vijay
+#to find sum of value1 & value2
+SUM=`expr $1 + $2`
+echo " sum of argument_value1 + argument_value2 is $SUM "
+[ec2-user@ip-172-31-93-35 ~]$
+
+
+[ec2-user@ip-172-31-93-35 ~]$ sh arithmatic_op_2.sh 70 20
+echo " sum of argument_value1 + argument_value2 is 90 "
+----------------------------------------------------------------------------
+
+      
+
+
+Other important dollar notations used in shell scripts:
+-------------------------------------------------------
+
+ $# --> To know number of arguments passed to script
+ $$ --> To know PID(processID) of the script 
+ $* --> To print all arguments passed to script
+ $0 --> To Print the name of script which i am executing 
+
+
+ 
+
+
+important dollar notations used in shell scripts:
+-------------------------------------------------------
+
+ $# --> To know number of arguments passed to script
+ $$ --> To know PID(processID) of the script 
+ $* --> To print all arguments name passed to script
+ $0 --> To Print the name of script which i am executing 
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+script to check dollar notations:
+---------------------------------
+
+#!/bin/bash 
+echo "Display employee name $1 "
+echo "Display emloyee id $2 "
+echo "Display employee location $3 "
+echo "Display employee state $4 "
+echo
+echo " number of arguments passed to script is ==> $# "
+echo " PID(processID) of the script is ==> $$ "
+echo " print all arguments i have passed to this script ==> $* "
+echo " Print the name of script which i am executing ==> $0 "
+
+
+sh <script-name>.sh  smith  12345 pune maharshtraa
+
+
+
+Types of variable substitution in shell script :
+------------------------------------------------
+1. Hardcoded:
+------------- 
+   name=alice
+   password=mypassword
+
+2. Command line arguments:
+---------------------------
+   name=$1
+   password=$2
+   sh scriptname.sh <argument1> <argument2>
+
+
+3. read:
+--------
+   used to run script in interactive mode.
+   using read we can pass input to script after executing script.
+
+Note:
+   syntax: read <VARIABLE_NAME> 
+            varaible value we van enter interactively using read
+   
+
+    ex1: read_test.sh
+    ---------------
+    #! /bin/bash 
+    echo "Enter value of variable A:" 
+    read A
+    echo "Enter value of variable B:" 
+    read B
+    echo "A Value given is:" $A 
+    echo "B Value given is:" $B
+    
+    ex2: read_test2.sh
+    -------------------
+    #!/bin/bash
+    echo "enter your username"
+    read MYUSERNAME
+    echo
+    echo "enter your email ID"
+    read EMAILID
+    echo
+    echo "enter your password"
+    read -s PASSWORD
+    echo
+    echo
+    echo "my username entered is $MYUSERNAME "
+    echo
+    echo "my email ID is $EMAILID "
+    echo
+    echo "my password is $PASSWORD "
+
+
+
+Note:
+-----
+read -s ==> option -s signifies sensitive data
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Conditional statements:
+-----------------------
+
+The conditional statement is used to do some activity based on decision-making  (i.e true / false). 
+
+if else condition:
+------------------
+
+syntax:
+
+if [ <condition> ]
+then
+  #commands to be executed if condition is true
+else
+  #commands to be executed if we condition is flase
+fi
+
+
+-------------------------------------------------------------------------------------------------
+
+
+script to check whether given string is alice or not using 3 VARIABLE SUBSTITUTION formats?
+==========================================================================================
+
+ex: Script in hardcoded format
+
+    #!/bin/bash
+    MYNAME=alice
+    if [ $MYNAME = "alice" ]
+    then
+       echo "Condition is true, Hello alice Good morning "
+    else
+       echo "username entered is not alice.... PLease check again...."
+    fi
+
+
+ex: Script in command line arguments format
+
+    #!/bin/bash
+    MYNAME=$1
+    if [ $MYNAME = "alice" ]
+    then
+       echo "Condition is true, Hello alice Good morning "
+    else
+       echo "username entered is not alice.... PLease check again...."
+    fi
+ 
+    observations:
+  	if we pass alice as argument ($1) alice = alice ===> condition true ==> execute command under then
+     
+	if we pass viratkohli as argument ($1) viratkohli = alice ==> condition false ==> execute command under else
+
+
+ex: Script in read command format
+
+    #!/bin/bash
+	echo "enter value for variable named MYNAME ....."
+    read MYNAME
+    if [ $MYNAME = "alice" ]
+    then
+       echo "Condition is true, Hello alice Good morning "
+    else
+       echo "username entered is not alice.... PLease check again...."
+    fi
+
+
+
+
+
+    
+    script to check that whether argument passed to script is 5 or not?
+    -------------------------------------------------------------------	
+    #!/bin/bash
+    value1=$1
+    if [ $value1 = 5 ]
+    then
+      echo " Condition is true, value is 5 "
+    else 
+      echo " Condition is fasle, value is incorrect & it is not 5 "
+    fi
+
+
+
+=========================================================================================
+
+
+
+
+Relational Operators: (Numeric Comparison Operators) 
+-----------------------------------------------------
+These operators are used to evaluate mathematical conditions in if condition of shell script
+
+-gt  Greater than 
+-ge  Greater than or equal to 
+-lt  Less than 
+-le  Less than or equal to 
+-eq  Is equal to 
+-ne  Not equal to
+
+These operators return boolean value (true/false)
+true --> block inside then block will get executed
+false --> block inside else block will get executed
+
+
+1.  script to check given number ( as argument) is equal to 10 or not ?
+
+test.sh 
+-------
+#!/bin/bash
+if [ $1 -eq 10 ]
+then
+    echo " condition is true/ sucesss: Given argument value is 10.... "
+else
+     echo "condition has failed : Given argument value is not  10.... "
+fi
+
+
+------------
+
+2.  script to check given number is greater than 5 or not.
+
+#!/bin/bash
+if [ $1 -gt 10 ]
+then
+    echo " condition is true/ sucesss: Given argument value is  greater 10.... "
+else
+     echo "condition has failed : Given argument value is lesser than 10.... "
+fi
+
+
+-----------
+
+3.  script to check only two arguments are passed to script ?
+
+Note: $# --> command to check number of arguments parsed to script
+
+#!/bin/bash
+if  [ $# -eq 2 ]
+then 
+    echo " condition is true/ sucesss: Arguments passed to script is 2 "
+else
+    echo "condition has failed: Arguments passed to script are not 2 "
+fi
+
+
+
+Note:
+-----
+#(comment) ==> if a line starts with # its considered as comment & it will get ignored while executing script.
+comment is generally used for authors refernce
+
+shell scripting is also called bash scriptingNote:
+-------
+
+STRING means group of alphabets / pattern
+
+ ALL possible conditions which can be used with "if conditions" 
+	 a.conditions used for  matching / checking "strings" are :
+	 
+	 eg: string => alice = junjesh
+
+         [ $STRING == STRING ] - Equal
+         [ $STRING != STRING ] - Not Equal
+	     [ -z $STRING ] - Empty string 
+         [ -n $STRING ] - Not empty string	 
+		       
+	b. conditions used for "mathematicall operations" / Relational operators are : 
+	     here NUM means number
+         [ $NUM -eq NUM ] - Equal
+         [ $NUM -ne NUM ] - Not equal
+         [ $NUM -lt NUM ] - Less than
+         [ $NUM -le NUM ] - Less than or equal
+         [ $NUM -gt NUM ] - Greaterthan
+         [ $NUM -ge NUM ] - Greater
+    
+	c. conditions used for checking file/directory/ link types are:
+          [ -f $FILE ] - Exists        ==> to check file Exists are not
+		  [ -d $DIRECTORY ] - Directory  ==> to check directory Exists are not
+		  [ -h $FILE ] - Symlink/softlink    ==> to check link is softlik are not
+		  
+	   To check permissions of file: 
+          [ -r $FILE ] - Readable  ==> to check file has read permissions are not
+          [ -w $FILE ] - Writable  ==> to check file has write permissions are not
+
+	
+	
+	d. based on commands exit status :
+	      [ $? -eq 0 ]   # conditions used, if previous commans return zero/ non zero exit code
+
+If $? equals zero, it indicates success.
+If $? is non-zero, it indicates failure.
+
+
+examples on if conditions used for checking file/directory/ link types are:
+--------------------------------------------------------------------------------
+#check the file exists/ are not in the given name (as input from read command)
+
+Note:
+----
+
+[ -f $FILENAME ] ==>  this condition block used to check FILE in mentioned name exists or not ?
+  
+[ -d $DIRECTORYNAME ] ==> condition block used to check directory in mentioned name exists or not
+
+[ -h $FILENAME ] ==> this condition block used to check hardlink in mentioned name exists or not ?
+
+
+FILENAME=$1
+if [ -f $FILENAME ]
+then
+   echo "file f1 exists"
+else 
+   echo "file f1 doesent exists...please check"
+fi
+
+
+if  [ -d $1 ]
+then 
+   echo "directory exists......"
+else 
+  echo  "directory doesent exists....please check"
+fi
+
+
+
+
+
+script to check the file exists/ are not in the given name (as input from read command):
+-------------------------------------------------------------------------------------
+
+
+[ec2-user@ip-172-31-24-167 ~]$ cat if_check_for_fileName.sh
+#!/bin/bash
+echo " Enter input file name you need to check............"
+read FILE_NAME
+if [ -f $FILE_NAME ]
+then
+  echo " file name provided by you in read command is available in pwd & please find its details below....."
+  ls -lrt | grep $FILE_NAME
+else
+  echo " file name provided in read command is unavailable/doesent exist....."
+fi
+
+
+
+
+Script to check the directory exists/ are not in the given name (as input from read command) :
+----------------------------------------------------------------------------------------------
+
+[ec2-user@ip-172-31-24-167 ~]$ cat if_check_for_directoryName.sh
+#!/bin/bash
+echo " Enter input directory name you need to check............"
+read DIR_NAME
+if [ -d $DIR_NAME ]
+then
+  echo " Directory name provided by you in read command is available & please find its details below....."
+  ls -lrt | grep $DIR_NAME
+else
+  echo " Directory name provided in read command is unavailable/doesent exist....."
+fi
+
+
+##Mutiple conditios check
+----------------------------
+
+if - elif - else 
+
+
+syntax: 
+if [condition 1]
+then 
+   //some command if condition is true
+elif [condition 2]
+   //some command elif condition is true  
+else
+   //some command if condition is false
+fi 
+
+
+
+------------
+check if argument passed is either of virat (or) kohli (or) not any of both
+
+#!/bin/bash
+if [ $1 == virat ]
+then
+    echo " condition is true/ sucesss: Given argument name is virat.... "
+elif [ $1 == kohli ]
+then 
+    echo "elsif condition is true... elif condition is true/ sucesss: Given argument name is kohli...."
+else
+     echo " both condition has failed : Given argument is not virat niether kohli.... "
+fi
+
+
+
+#shell script to find the greatest of three numbers
+
+#!/bin/bash
+
+# Read three numbers from the user
+echo "Enter the first number:"
+read num1
+echo "Enter the second number:"
+read num2
+echo "Enter the third number:"
+read num3
+
+# Check which number is the greatest
+if [ $num1 -ge $num2 ] && [ $num1 -ge $num3 ]
+then
+    echo "The greatest number is: $num1"
+elif [ $num2 -ge $num1 ] && [ $num2 -ge $num3 ]
+then
+    echo "The greatest number is: $num2"
+else
+    echo "The greatest number is: $num3"
+fi
+
+
+-----------------------
+
+Loops
+----------
+shell scripts can repeat particular instruction again and again, until particular condition satisfies.
+A group of instruction that is executed repeatedly is called a loop.
+
+why loops?
+  If we want to execute a group of commands multiple times then we should go for loops / iterative statements.
+
+Types of loops
+Majorly we have two types of loops
+• For loop
+• While loop
+
+
+For Loop
+------------
+ for loop operates on lists of items. It repeats a set of commands for every item in a list.
+
+The for loop syntax:
+
+for variable in value1 value2 ... valueN
+do
+       #execute some commands
+	   command1
+       command2
+       ....
+       ....
+       commandN
+done
+
+
+example 1: Script to Print welcome 5 times using for loop
+
+
+#!/bin/bash
+for i in 1 2 3 4 5
+do
+  echo "Welcome $i times."
+done
+
+output
+--------
+Welcome 1 times
+Welcome 2 times
+welcome 3 timess
+Welcome 4 times
+Welcome 5 times
+
+
+example2: Script to print fruits list
+
+#!/bin/bash
+for fruit in mango apple kiwi orange 
+do
+ echo "I like $fruit."
+done
+
+output
+--------
+i like mango
+i like apple
+i like kiwi
+i like orange
+
+
+
+------------------------
+eg2_for loop:
+---------------
+script to print variable values  & create  directory for each value........
+
+#!/bin/bash
+set -x
+for dir_name in dir_1 dir_2 dir_3 dir_4
+do
+
+   echo " create directory for each tool in my_dir "
+   mkdir $dir_name
+   ls -lrt | tail -1
+   echo
+   echo
+   echo
+done
+echo " closing script execution........"
+
+-----------------------
+eg3_for loop:
+---------------
+script to print variable values  & create  directory for each value........
+
++++++++++++++++++++++++++++++++++
+#!/bin/bash
+set -x
+for TOOL_STACK in git jenkins docker k8s aws ansible
+do
+   echo " Currently we are learning this $TOOL_STACK "
+   echo " create directory for each tool in Tool stack "
+   mkdir $TOOL_STACK
+   ls -lrt | tail -1
+   echo
+   echo
+   echo
+done
+echo " closing script execution........"
+
++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+assume we have 100  servers , we want to copy a file called as "hosts" to all 100 servers to path "/etc" 
+
+
+eg3 for loop :   to scp files to multiple servers
+-----------------------------------------------------
+#!/bin/bash
+set -x
+for servers_ip_address in { server1_ip, server2_ip, server3_ip, server4_ip , .. server100_ip }
+do
+   scp hosts ec2-user@$servers_ip_address:/etc/
+done
+ 
+
+
+
+
+___________________________________________________________________________________________________________________________________
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Crontab Installations:
+---------------------------
+sudo yum install cronie -y
+sudo systemctl enable crond.service
+sudo systemctl start crond.service
+
+
+crontab: 
+--------
+is a scheduler to schedule  your scripts & commands for execution.
+
+syntax:     m     h   dom    mon   dow  sh  <absolute_path_to_myscript>  
+
+where:
+m    ==> Minutes.    
+         #The allowed values reange : 0 to 59.
+			
+h    ==> Hours.        
+         #The allowed values range: 0 to 23 
+			 
+dom  ==> Day of Month.   
+         #Allowed values range: 1 to 31
+			 
+mon  ==> Month of Year.   
+         #Allowed values range is: 1 to 12 
+         #Even we can use terms like JAN,FEB,MAR etc 
+			  
+dow  ==> Day of week.    
+         #The allowed values range is: 0 to 6 
+         #Even we can use terms like SUN(0),MON(1),TUE(2)  WED (3) THU(4) FRI(5) SAT(6)
+
+
+cron commands
+-------------------
+crontab -l   :     To list out cron jobs which are already configured.
+crontab -e  :    To edit  crontab & schedule scripts .
+
+
+Common crontab Examples:
+-----------------------
+				 
+- Run script AUG 15th 12 o clock
+	   00    12  15  AUG   MON  sh /home/ec2-user/dis_space_check.sh 
+
+- Run script Everday 12 o clock 
+       00 12 * * *  sh /home/ec2-user/dis_space_check.sh
+
+- Run script only on Monday & thursday everyminute
+       *  * * DEC MON,THU sh /home/ec2-user/dis_space_check.sh
+
+
+# Configure cron job which writes hello from cron message to cron_output_log  for every minute. 
+$ crontab -e
+*/1 * * * * echo "Hello from cron" >> /home/ec2-user/cron_output_log2
+
+
+
+Various Possibilities of specifying Date and Time USING CRONTAB:
+---------------------------------------------------------------
+ # m h dom mon dow command 
+ - Every minute   ==> * * * * * 
+
+- Every 2 minutes ==>  */2 * * * * 
+       note: */2 means every 2nd minute 
+
+-  Every 3 minutes  ==> */3 * * * *
+
+- Every 1 hour  ==>  0 * * * * 
+
+- Every 2 hours   ==> 0 */2 * * * 
+
+- Execute only at 6'o clock,14'o clock and 22o clock
+   0 6,14,22 * * * 
+
+- Every Night at midnight   ==> 0 0 * * *
+
+- Every Sunday only once  ==>  0 0 * * SUN 0 0 * * 0
+
+- Only on week days  ==> 0 0 * * 1-5
+
+- Only on week-ends   ==> 0 0 * * 6,0 
+
+- Every month on 1st  ==>  0 0 1 * * 
+
+- Every Year Jan 1st   ==> 0 0 1 1 *
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

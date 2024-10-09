@@ -1,0 +1,98 @@
+1)Git Squash(combining multiple commits in to single commit) => git rebase -i HEAD~3
+2)Deleting branch => git branch -d <branchname>
+3)Tag Name(to identify milestone of project) => git tag <tagName>
+4)Note: rebase command should be executed on child branch only (i.e testbranch) => git rebase master
+5)Git stash => git stash
+6)To bring back the stashed changes => git stash pop
+7)Cherry pick used to choose a particular commit from one branch and apply it onto another=>git cherry-pick <commitID>
+8)Hard reset => git reset --hard <commitID>
+9)Soft reset => git reset --soft <commitID>
+10)git revert is used to rollback only 1 step previous version => git revert HEAD
+11)after Git fetch => git log origin/main   and     git merge origin/main
+12)To rename branch => git branch -m <old_branch_name> <new_branch_name>
+13)To modify most recent commit message => git commit --amend -m "Added lines to README.md"
+14)display content of file along with line numbers => cat -n <filename>
+15)if <destinationFilename> dosent exist , copy will creates that file & copies content => cp <file_to_be_copied> <destinationFilename>
+16)to create nested directory => mkdir -p dir1/dir2/dir3
+17)to create multiple directory => mkdir dir1 dir2 dir3
+18)to delete specific files at a time => rm -f <filename1> <filename2>
+19)to delete specific directory at a time => rm -rf <dir1> <dir2>
+20)to create hidden file/directory we need to use .(dot) followed by name.
+21)Redirect is used to write output of a command to file ( > ), it will erase all previous content of file.
+22)Append is used to write output of a command to file, but append will not overwrite/override content of  file ( >> )
+23)to copy 1 directory to another directory => cp -r <source_directory> <target_directory>
+24)to search multiple patterns => grep -e "<pattern_1>" -e "<pattern_2>" fileName
+25)to search pattern in pwd and subdirectories => grep -r <pattern_to_search> <directory_name>
+26)to check inode number => ls -li <file/directory name>
+27)to check system memory(RAM) => free -m
+28)To check disk size => df -kh
+29)To check number of cpu's => nproc
+30)to change ownership for directories => chown -R <usersName>:<groupName> directoryName
+31)to check the usage of cpu% and memory% for all users => ps -aux
+32)kill command => kill -9 <ProcessID>
+33)SED command is used to replace a string/pattern without opening file => sed -i 's/<old_name>/<new_name>/g' filename
+34)Find Command => find <path> -iname <filename_tobe_searched>    (i ==> ignore case-insensitive)
+35)to check from how long the system is up & running => uptime
+36)command is used to list all listnening/active ports => netstat -lntp
+37)SCP command used to transfer files/directory from one server to another(remote) server => For File:   
+scp <file_tobe_copied> <username_of_targetserver>@<ipaddress_of_targetserver>:<path_in_targetserver>
+For Directory-->
+scp -r <dir_tobe_copied> <username_of_targetserver>@<ipaddress_of_targetserver>:<path_in_targetserver>
+38)ping is used to check any server is up & running => ping <ip_of_remote_server> 
+39)to do a secure copy to another server => scp -r ram manu@172.31.48.34:/home/manu
+[manu is the user in another server, before transfering/copying need to enable password authentication:yes in root user /etc/ssh/sshd_config file then run a command "service sshd restart" ]
+40)to do a key based authentication and fetch a user => 
+a) First generate ssh-keygen and cd .ssh
+b) ssh-copy-id user@ipaddress (it will ask password first time while copying id)
+c) ssh user@ipaddress (now passwordless connection achieved to the user from another server)
+41)cut command => cut -d " " -f<columnNumber> <filename>
+42)awk command is used to cut file column wise & row wise => awk -F " " '{print$1}' <filename>
+43)<variable_name>=<variable_value>  [x=12 to print x value echo $x] 
+44) Exit Code is => echo $?  [if zero->previous command is sucess and if non-zero->previous command not executed sucessfully]
+45)DOLLAR NOTATIONS USED IN SHELL SCRIPT
+$# --> To know number of arguments passed to script
+$$ --> To know PID(processID) of the script 
+$* --> To print all arguments passed to script
+$0 --> To Print the name of script which i am executing
+46)read -s ==> option -s signifies sensitive data
+47)cat /etc/os-release => to check OS details
+48)cat /etc/passwd => to check how many users
+49)to check listening ports of remote server => telnet <ipaddress> <port no>
+50)to check listening port of current server => netstat -lntp
+51)ctrl+l ==> to clear shell terminal/screen  
+52)top ==> to know which process utilising what %CPU and %MEM is using.
+53)crontab
+cron commands
+-------------------
+crontab -l   :     To list out cron jobs which are already configured.
+crontab -e  :    To edit  crontab & schedule scripts .
+---------------------------------------------------------------
+ # m h dom mon dow command 
+ - Every minute   ==> * * * * * 
+
+- Every 2 minutes ==>  */2 * * * * 
+       note: */2 means every 2nd minute 
+
+-  Every 3 minutes  ==> */3 * * * *
+
+- Every 1 hour  ==>  0 * * * * 
+
+- Every 2 hours   ==> 0 */2 * * * 
+
+- Execute only at 6'o clock,14'o clock and 22o clock
+   0 6,14,22 * * * 
+
+- Every Night at midnight   ==> 0 0 * * *
+
+- Every Sunday only once  ==>  0 0 * * SUN 0 0 * * 0
+
+- Only on week days  ==> 0 0 * * 1-5
+
+- Only on week-ends   ==> 0 0 * * 6,0 
+
+- Every month on 1st  ==>  0 0 1 * * 
+
+- Every Year Jan 1st   ==> 0 0 1 1 *
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+

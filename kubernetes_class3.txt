@@ -1,0 +1,149 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Introduction to yaml:
+---------------------
+- yaml is file format 
+- yaml is space indented (equal spaces to be given)
+- in yaml data would be in key value format (Dictionary format)
+- always whenever we write yaml file it will start with --- & ends with ...
+- # Comments start with a hash symbol
+- yaml files extension can be .yml (or) .yaml
+
+
+ex1: write yaml file on indian cricket team:
+
+---
+coach: dravid 
+batsmens:
+  - virat
+  - rohit
+  - rahul
+bowlers:
+  - bumrah
+  - shami
+wicketkeeper: rahul
+...
+
+to validate our yam file goto www.yamllint.com paste & check for file format / indentation check.
+it shows our yaml is valid or not.
+
+ex2: write yaml file on devops tools:
+-------------------------------------
+
+---
+os: 
+  linux: learned
+  windows: needtostart
+versionscontroltool: git
+containerizationtools:
+  - docker
+  - containerD
+  - podman
+orchestartiontools:
+  kubernetes: moreused
+  dockerswarm: lessused
+...
+
+
+example 3 of yaml file:  geographical aspects of country india in yaml format?
+------------------------------------------------------------------------------
+
+---
+india:
+  karnataka:
+    Mysore: culturecapital
+    bangalore: capital
+  mahararashtra:
+    - mumbai
+    - pune
+  andhrapradash:
+    - hyderabad
+...
+
+explaination of above yaml file.
+----------------------------------
+india ==> we can call that as parent element or root element of yaml file
+  karnataka, maharashtra & andhrapradash are children of Root element (india)
+  Note: Elements are considered as partent & children are considered only on spaces basis(give two spaces).
+
+how to comment a line in yaml?
+------------------------------
+  start a line with # (hash)
+
+
+Assignment:
+-----------
+ create few yaml files & try to validate
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+YAML files in kubernetes:
+--------------------------
+In K8S These yaml files are also called as manifest files (or) definition file. 
+
+As a devops engineeras, we need to create a yaml files  ( .yml )   file 
+
+What this yaml file contains?
+1) how many containers needs to be create in a pod.
+2) what name we need to give for pod & container. 
+3) what image we need to use to create container.
+etc...
+
+
+All the above information will be available in k8s yaml file.
+
+This yaml file / definition file / manifest file should be provided to kuberneted master.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+
+
+Note:
+-----
+k8s is going to manage our containers but k8s cannot directly manage a containers so k8s will manage our containers indirectly through its own object called as pod ?
+
+
+where do we use yaml files in devops?
+-------------------------------------
+  kubernetes objects is written in yaml file format.
+  ansible playbooks is written in yaml file format.
+  docker compose is written in yaml file format.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+kubernetes objects:
+-------------------
+components which we are going to create in k8s are called k8s objects.
+
+eg: pod , replicaset , deployment, secrets , service etc 
+
+Kubernetes uses various types of objects.
+
+1. Pod:  
+   Pod is the basic k8s object.
+ - Pod is just a layer of abstraction on top of a container.
+ - Inside the pod, we have the container. 
+   kubectl commands will work on the pod and pod communicates there instructions to the container.
+ - Pods are ephemeral in nature, so data inside the pods will gets deleted once pod is finished its operation.
+
+2. Service Object: 
+   This object is used for port mapping and network load balancing.
+
+3. NameSpace: 
+    This is used for creating partitions in the cluster.
+    pods running in  a namespace cannot communicate with other pods running in other namespace.
+
+4. Secrets: 
+    This is used for storing & passing encrypted data to the pods.
+
+5. ReplicaSet / Replication COntroller: 
+    This is used for managing multiple replicas of a pod to perform activities like load balancing and autoscaling.
+
+6. Deployment: 
+    This is used for performing all activites that a ReplicaSet can do. It can also handle rolling updates
+
+
+---------------------------------------------------------------------------------------------------------------------
